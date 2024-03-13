@@ -1,0 +1,509 @@
+﻿
+body {
+    margin: 0;
+    padding: 0;
+    width: 1518px; /* Ширина рівна 100% ширини вікна браузера */
+    height: 500px;
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar {
+    background-color: #333;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+.line {
+    z-index: 99999;
+    position: fixed;
+    float: left;
+    height: 50px;
+    width: 100%;
+    background-color: black;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+
+.menu {
+    list-style-type: none; /* Видаляємо маркери списку */
+    display: flex; /* Розміщуємо елементи у рядок */
+}
+
+    .menu li {
+        padding-right: 25px; /* Встановлюємо відступ між елементами */
+        
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: white;
+        float: left;
+    }
+
+
+.left-menu {
+    background-color: #ced4da;
+    position: relative;
+    top: 30px;
+    width: 200px;
+    height: 707px;
+    float: left;
+    overflow: hidden;
+}
+
+.right-menu {
+    
+    background-color: #ced4da;
+    position: relative;
+    top: 30px;
+    left: 18px;
+    overflow: hidden;
+    width: 200px;
+    height: 707px;
+    float: right;
+}
+
+.content {
+    float: left;
+    padding-left: 20px;
+}
+
+/* Стилі для модального вікна */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    height: 400px;
+    overflow: auto;
+    background-color: #ced4da;
+    border: 1px solid #1a1919;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10000;
+}
+
+/* Стилі для вкладок */
+
+
+    
+
+.tabcontent {
+    display: none;    
+    border-top: 1px solid #ccc;
+    
+    
+    
+}
+
+    .tabcontent.active {
+        display: block;
+    }
+
+/* Стилі для кнопки "+" */
+.buttonForHref {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    z-index: 9997;
+    font-size: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+    .buttonForHref:hover {
+        color: black;
+        background-color: #48cae4;
+    }
+    /*для падаючих картинок*/
+
+    .test {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #ced4da;
+    width: 300px;
+    height: 800px;
+    position: relative; /* Змінено на relative */
+}
+
+.arrow,
+.currency-symbol {
+    position: absolute;
+    font-size: 20px;
+    animation: fall 5s linear infinite;
+}
+
+.arrow {
+    color: red;
+    transform: rotate(90deg);
+    z-index: 2;
+}
+
+.currency-symbol {
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-100vh);
+    }
+
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+
+
+.posiotionInfoAbout {
+    position: relative;
+    top:140px;
+    left: 160px;
+    
+}
+
+.styled-table {
+    
+    border-collapse: collapse;
+    margin: 25px 0;
+    min-width: 800px;
+    height: 150px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border: solid 1px black;
+}
+    .styled-table thead tr {
+        background-color: #009879;
+        color: #ffffff;
+        text-align: center;
+    }
+
+    .styled-table th,
+    .styled-table td {
+        padding: 15px 18px;
+    }
+
+    .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+            font-weight: bold;
+            color: #009879;
+        }
+
+        /*.styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }*/
+    .styled-table th {
+        text-align: center; /* Выравнивание содержимого ячеек th по центру */
+    }
+
+    .styled-table td {
+        text-align: center; /* Выравнивание содержимого ячеек td по центру */
+    }
+
+.lablePosition {
+    position: relative;
+    top: 50px;
+    color: #009879;
+    text-shadow: 2px 1px 6px rgba(0, 0, 0, 0.3);
+    
+    font-size: 30px;
+}
+
+
+/*Стилі для Review*/
+.position-detail-info {
+    position: relative;
+    text-align: left;    
+    font-size: 20px;
+    top:120px;
+}
+
+.bottom-statistic {
+    position: relative;
+    top:150px;
+    
+}
+
+.botton-for-review {
+    position: absolute;
+    top: 65px;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px
+}
+
+/*@media screen and (min-height: 740px) {
+    .left-menu {
+        cursor: pointer;
+        background-color: red;
+        position: relative;
+        top: 30px;
+        width: 200px;
+        height: 1000px;
+        float: left;
+        overflow: hidden;
+    }
+}*/
+
+
+/*Для модульного вікна з Часом*/
+
+
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9998;
+    display: none;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-between; /* Рівномірно розподіляє кнопки на всю доступну ширину */
+    width: 20px; /* Задає ширину лінії */
+    margin: 0 auto; /* Вирівнює лінію по центру */
+    position: relative;
+    right: 100px;       
+}
+
+.tabs button {
+        background-color: white;
+        color:black;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 15px 20px;
+        transition: 0.3s;
+        font-size: 17px;
+        font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border-radius:5px;
+    }
+
+        .tabs button:hover {
+            background-color: #ddd;
+
+        }
+
+    .tabs button.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+.position-add {
+    position: absolute;    
+    bottom: 3px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+    .position-add input, select {
+        width: 150px;
+        border-radius: 5px;
+        border: solid 0.5px;
+    }
+
+.position-add button{
+    position:relative;
+    bottom:0.5px;
+    left:180px;
+    width:75px;
+    height:35px;
+    margin:5px;
+    border-radius: 5px;
+    border:none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    color:white;
+    
+}
+
+.position-add button:hover{
+   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+   color:black;
+   background-color: #999999;
+}
+
+
+.colorGreen {
+    background-color: #009879;
+}
+.colorRed {
+    background-color: #990000
+}
+.colorBlue {
+    background-color: #007bff
+}
+
+.position-modal-incom{
+    position:relative;
+}
+
+.position-modal-incom button{
+    position:relative;
+    top:55px;
+    left:180px;
+    width:75px;
+    height:35px;
+    margin:5px;
+    border-radius: 5px;
+    border:none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    color:white;
+}
+
+.position-modal-incom button:hover{
+     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+       color:black;
+       background-color: #999999;
+}
+
+.close-button {
+    cursor:pointer;
+    position:relative; 
+    bottom:347px; 
+    left:85%;   
+    font-size: 18px;
+}
+.close-button-second {
+    cursor: pointer;
+    position:relative;
+    bottom: 39px;
+    left:298px;
+    
+    
+    font-size: 18px;
+}
+
+.history-button button {
+    border-radius: 5px;
+    border: none;
+    color: white;
+    width: 50px;
+    height: 35px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+.history-button button:hover {
+     color:black;
+       background-color: #999999;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modalDelete {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 130px;
+    overflow: auto;
+    background-color: #ced4da;
+    border: 1px solid #1a1919;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 10000;
+    text-align: center;
+}
+.modalDelete button{
+    position:relative;
+    top:30px;
+    left:60px
+}
+
+
+.positionOk {
+    position: absolute;
+    bottom: 46px;
+    left: 0px;
+}
+.positionButtonOk {
+    cursor: pointer;    
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    color: white;
+    width: 80px;
+    height: 20px;
+}
+.positionButtonOk:hover {    
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: black;
+    background-color: #999999;
+}
+.close-button-third {
+    cursor: pointer;
+    position: relative;
+    bottom: 90px;
+    left: 150px;
+}
+
+
+.positionButtonCancel {
+    cursor: pointer;
+    position: absolute;
+    bottom: 10px;
+    left: 100px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    color: white;
+    width:80px;
+    height:20px;
+}
+.positionButtonCancel:hover {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color:black;
+    background-color: #999999;
+}
+
+
+
+/*Для статистики*/
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 10001;
+    max-width: 300px;
+    border-radius: 5px;
+    width: 290px;
+    height: 170px;
+}
+
+

@@ -1,0 +1,271 @@
+﻿@model IEnumerable<Service.IncomePerson>
+@{
+	ViewBag.Title = "Income";
+}
+
+<link rel="stylesheet" href="/IncomePageStyle.css">
+<link rel="stylesheet" href="/startStyle.css">
+
+
+
+
+<div class="container-buttom">
+        <button  class="button" id="PeriodStatistic">Сhange period</button>
+</div>
+
+<div class="overlay" id="overlayStatictic"></div>
+
+
+
+
+<div class="popup" id="popupStatistic">
+    <span class="close" onclick="closePopup()">✖️</span>
+
+     <div class="periods">Periods</div>
+
+     <div class="serch-style">
+
+            <form id="daySendForm" asp-controller="Main" asp-action="InfoIncome" method="post">
+                <div class="flex-1">
+                    <input name="day" class="form-input" type="date" />
+                    <span class="text-red"></span>
+                </div>
+                <button type="submit">Search</button>
+            </form>
+
+        </div>
+       
+
+         @{
+            DateTime currentDate = DateTime.Now;
+
+            
+            DateTime endWeek = currentDate.AddDays(0);
+
+            
+            DateTime startWeek = currentDate.AddDays(-7);
+
+            
+            ViewBag.StartOfWeek = startWeek.ToString("dd.MM.yyyy");
+            ViewBag.EndOfWeek = endWeek.ToString("dd.MM.yyyy");
+        }
+
+        
+
+        <div class="month-style">
+
+            <form id="monthForm" asp-controller="Main" asp-action="InfoIncome" method="post">
+                <select name="monthDate" id="monthSelect">
+                    <option value="">Month</option>
+                    @foreach (var key in ViewBag.Month.Keys){
+                        <option value="@ViewBag.Month[key]">@key</option>
+                    }
+                </select>    
+            </form>
+        </div>
+
+        <div class="year-style">
+            <form id="YearForm" asp-controller="Main" asp-action="InfoIncome" method="post">
+                <select id="YearSelect" name="yearDate">
+                    <option value="">Year</option>
+                    @foreach (var key in ViewBag.Year){
+                        <option value="@key">@key</option>
+                    }
+                </select> 
+            </form>
+        </div>
+
+
+        <div class="all-style">
+            <form asp-controller="Main" asp-action="InfoIncome" method="post">
+                <input type="hidden" name="allTime" value="01.01.0001" />
+                <button type="submit">All time</button>
+            </form>
+        </div>    
+</div>
+
+
+<script>
+    document.getElementById('PeriodStatistic').addEventListener('click', function(){
+        document.getElementById('popupStatistic').style.display = 'block';
+        document.getElementById('overlayStatictic').style.display = 'block';
+    });
+
+    function closePopup(){
+        document.getElementById('popupStatistic').style.display = 'none';
+        document.getElementById('overlayStatictic').style.display = 'none';
+    }
+
+
+    var form = document.getElementById('monthForm');   
+    var select = document.getElementById('monthSelect');
+    select.addEventListener('change', function() {       
+        form.submit(); // Виправлено на form.submit()
+    });
+
+     var formYear = document.getElementById('YearForm');   
+            var select = document.getElementById('YearSelect');
+                select.addEventListener('change', function() {
+                
+                formYear.submit();
+            });
+</script>
+
+
+<a asp-controller="Main" asp-action="Start">
+    <img class="action-gif-costs" width="50" height="50" src="/pictures/income-page.gif" alt="income page">
+</a> 
+ 
+@{
+    
+    var Job = Model.Where(item=>item.SourceOfIncome == "Job").ToList();
+    
+    var Business = Model.Where(item=>item.SourceOfIncome == "Business").ToList();
+    var Freelance = Model.Where(item=>item.SourceOfIncome == "Freelance").ToList();
+}
+<div class="Income-icone">
+    <div class="item-container">
+        @if (Job.Count() > 0)
+        {
+            <div>
+                <a asp-controller="Main" asp-action="InformationAboutTypeIncome" asp-route-TypePeriod="@ViewBag.TypeOfPeriod" asp-route-type="@Job[0].SourceOfIncome" asp-route-Period="@ViewBag.DateInfo">
+                    <img src="/pictures/job-search.png" width="50" height="50" style="vertical-align: middle;" />
+                </a>
+                <p>@Job[0].SourceOfIncome</p>
+                <p>@Math.Round(Job[0].Income ?? 0.0, 3) @Job[0].Currency</p>
+            </div>
+        }
+        else
+        {
+            <div style="filter: grayscale(100%);">
+                <img src="/pictures/job-search.png" width="50" height="50" style="vertical-align: middle;" />
+                <p>Job</p>
+                <p>0.0</p>
+            </div>
+        }
+    </div>
+
+    <div class="item-container">
+        @if (Business.Count() > 0)
+        {
+            <div>
+                <a asp-controller="Main" asp-action="InformationAboutTypeIncome" asp-route-TypePeriod="@ViewBag.TypeOfPeriod" asp-route-type="@Business[0].SourceOfIncome" asp-route-Period="@ViewBag.DateInfo">
+                    <img src="/pictures/financial-profit.png" width="50" height="50" style="vertical-align: middle;" />
+                </a>
+                <p>@Business[0].SourceOfIncome</p>
+                <p>@Math.Round(Business[0].Income ?? 0.0, 3) @Business[0].Currency</p>
+            </div>
+        }
+        else
+        {
+            <div style="filter: grayscale(100%);">
+                <img src="/pictures/financial-profit.png" width="50" height="50" style="vertical-align: middle;" />
+                <p>Business</p>
+                <p>0.0</p>
+            </div>
+        }
+    </div>
+
+    <div class="item-container">
+        @if (Freelance.Count() > 0)
+        {
+            <div>
+                <a asp-controller="Main" asp-action="InformationAboutTypeIncome" asp-route-TypePeriod="@ViewBag.TypeOfPeriod" asp-route-type="@Freelance[0].SourceOfIncome" asp-route-Period="@ViewBag.DateInfo">
+                    <img src="/pictures/freelance-work.png" width="50" height="50" style="vertical-align: middle;" />
+                </a>
+                <p>@Freelance[0].SourceOfIncome</p>
+                <p>@Math.Round(Freelance[0].Income ?? 0.0, 3) @Freelance[0].Currency</p>
+            </div>
+        }
+        else
+        {
+            <div style="filter: grayscale(100%);">
+                <img src="/pictures/freelance-work.png" width="50" height="50" style="vertical-align: middle;" />
+                <p>Freelance</p>
+                <p>0.0</p>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+@* <a  asp-controller="Main" asp-action="Start"><img src="~/pictures/up-arrow.png" style="weght: 50px; height: 50px" /></a> *@
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Add styles for centering the chart */
+        #myDoughnutChart {
+            margin: auto;
+            display: block;
+        }
+    </style>
+
+
+
+    
+    
+        <div class="diagram-center">
+            <canvas id="myDoughnutChart" width="400" height="400"></canvas>
+        </div>
+    
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var infoBodyData = @Html.Raw(Json.Serialize(Model));
+
+        console.log(infoBodyData)
+
+        // Initialize groupedData before using it
+        var groupedData = {};
+
+        infoBodyData.forEach(function (item) {
+            if (!groupedData[item.sourceOfIncome]) {
+                groupedData[item.sourceOfIncome] = 0;
+            }
+            groupedData[item.sourceOfIncome] += item.income;
+        });
+
+        var labels = Object.keys(groupedData);
+        var data = Object.values(groupedData);
+
+        var color = {
+            "Job":'rgba(54, 162, 235, 0.3)',
+            "Business":'rgba(250, 163, 7, 0.3)',
+            "Freelance":' rgba(128, 237, 153, 0.3)',
+        }
+        var colorBorder = {
+            "Job": 'rgba(54, 162, 235, 1)',
+            "Business":'rgba(250, 163, 7, 1)',
+            "Freelance":' rgba(128, 237, 153, 1)',
+        }
+        var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'pie', // Change the type to 'pie'
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: [
+                        ...labels.map(label => color[label])
+                    ],
+                    borderColor: [
+                        ...labels.map(label => colorBorder[label])
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: false,
+                maintainAspectRatio: false,
+            }
+        });
+    });
+    
+</script>
+
+
+
+
+<a class="buttonForHref" asp-controller="Main" asp-action="Add">+ </a> 

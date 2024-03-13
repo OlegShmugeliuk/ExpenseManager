@@ -1,0 +1,491 @@
+﻿@model IEnumerable<Service.DictionaryForHomePage>
+@using ParserCurrenty;
+@{
+    ViewBag.Title = "Home";
+
+
+    Dictionary<string, string> Icons = new Dictionary<string, string>()
+    {
+        {"Housing","/pictures/house.png"},
+        {"Healthcare", "/pictures/healthcare.png"},
+        {"Utilities","/pictures/home.png"}
+    };
+
+
+    Tuple<string, double, string> myTuple = Tuple.Create("", 0.0, ""); // Спочатку ініціалізуємо кортеж з пустими значеннями
+
+    foreach(var item in Model)
+    {
+        myTuple = Tuple.Create(item.ExpenditureType, item.TotalPrice, item.CurrencyType); // Заповнюємо кортеж значеннями з кожного item
+    }
+
+    Parser parser = new Parser();
+            ViewBag.ExchangeRate = await parser.ParseForUAH();
+
+            ViewBag.ExchangeRateUSD = await parser.ParseForUSD();
+
+			ViewBag.ExchangeRateUSD["UAH"] = 1.029287 / ViewBag.ExchangeRateUSD["UAH"];
+
+			ViewBag.ExchangeRateEUR = await parser.ParseForEUR();
+            ViewBag.ExchangeRateEUR.Add("UAH", 41.34);
+
+			ViewBag.ExchangeRatePLN = await parser.ParseForPLN();
+            ViewBag.ExchangeRatePLN["UAH"] = 1.04275 / ViewBag.ExchangeRatePLN["UAH"];
+
+
+
+}
+
+<link rel="stylesheet" href="/startStyle.css">
+
+<style>
+    .action-gif {
+    cursor: pointer;
+    position: relative;
+    top: 300px;
+    left: 850px;
+    
+}
+
+</style>
+
+<div style="position:relative; top:60px">
+    <table class="exchange-table">
+        <tr>
+            <th colspan="2">Exchange rate</th>
+        </tr>
+        <tr>
+            <td class="currency-Type" colspan="2" >USD</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">Sale</td>
+            <td class="BuyCell">Buy</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">@ViewBag.ExchangeRate["USD"] UAH</td>
+            <td class="BuyCell">@Math.Round(ViewBag.ExchangeRateUSD["UAH"], 2) UAH</td>
+        </tr>
+    
+        <tr>
+            <td class="currency-Type"  colspan="2">EUR</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">Sale</td>
+            <td class="BuyCell">Buy</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">@ViewBag.ExchangeRate["EUR"] UAH</td>
+            <td class="BuyCell">@Math.Round(ViewBag.ExchangeRateEUR["UAH"], 2) UAH</td>
+        </tr>
+
+         <tr>
+            <td class="currency-Type" colspan="2">PLN</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">Sale</td>
+            <td class="BuyCell">Buy</td>
+        </tr>
+        <tr>
+            <td class="SaleCell">@ViewBag.ExchangeRate["PLN"] UAH</td>
+            <td class="BuyCell">@Math.Round(ViewBag.ExchangeRatePLN["UAH"], 2) UAH</td>
+        </tr>
+
+    </table>
+</div>
+
+
+
+<div>
+
+    <div class="container-buttom">
+        <button  class="button" id="openButton">Сhange period</button>
+    </div>
+    <div class="overlay" id="overlay"></div>
+
+    <div class="popup" id="popup">
+        <span class="close" onclick="closePopup()">✖️</span>
+
+
+        <div class="periods">Periods</div>
+
+        
+
+        <div class="serch-style">
+
+            <form asp-controller="Main" asp-action="Start" method="post">
+                <div class="flex-1">
+                    <input name="PostDateTime" class="form-input" type="date" />
+                    <span class="text-red"></span>
+                </div>
+                <button type="submit">Search</button>
+            </form>
+
+        </div>
+        
+
+        @{
+            DateTime currentDate = DateTime.Now;
+
+            
+            DateTime endWeek = currentDate.AddDays(0);
+
+            
+            DateTime startWeek = currentDate.AddDays(-7);
+
+            
+            ViewBag.StartOfWeek = startWeek.ToString("dd.MM.yyyy");
+            ViewBag.EndOfWeek = endWeek.ToString("dd.MM.yyyy");
+        }
+
+        
+
+        <div class="month-style">
+
+            <form id="monthForm" asp-controller="Main" asp-action="Start" method="post">
+                <select name="DateOfMonth" id="monthSelect">
+                    <option value="">Month</option>
+                    @foreach (var key in ViewBag.Month.Keys){
+                        <option value="@ViewBag.Month[key]">@key</option>
+                    }
+                </select>    
+            </form>
+        </div>
+
+        <div class="year-style">
+            <form id="YearForm" asp-controller="Main" asp-action="Start" method="post">
+                <select id="YearSelect" name="DateOfYear">
+                    <option value="">Year</option>
+                    @foreach (var key in ViewBag.Year){
+                        <option value="@key">@key</option>
+                    }
+                </select> 
+            </form>
+        </div>
+
+
+        <div class="all-style">
+            <form asp-controller="Main" asp-action="Start" method="post">
+                <input type="hidden" name="PostDateTime" value="01.01.0001" />
+                <button type="submit">All time</button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>    
+    
+    function openPopup() {
+        document.getElementById('popup').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    }
+
+    
+    function closePopup() {
+        document.getElementById('popup').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }
+
+    
+    document.getElementById('openButton').addEventListener('click', openPopup);
+
+    // Приберіть onclick з вашої кнопки та решту місць, де ви використовуєте це для керування подіями
+</script>
+
+        <script>    
+    
+            var formMonth = document.getElementById('monthForm');   
+            var select = document.getElementById('monthSelect');
+                select.addEventListener('change', function() {
+                
+                formMonth.submit();
+            });
+    
+
+        </script>
+
+        
+
+        </div>
+
+
+        <script>    
+    
+            var formYear = document.getElementById('YearForm');   
+            var select = document.getElementById('YearSelect');
+                select.addEventListener('change', function() {
+                
+                formYear.submit();
+            });
+    
+
+        </script>
+    </div>
+
+<script src="~/Script/SmallWindowScript.js"></script>
+
+<style>
+    
+</style>
+
+
+@{
+    var housingDisplayed = Model.Where(item=>item.ExpenditureType == "Housing").ToList();
+    var healthcareDisplayed = Model.Where(item=>item.ExpenditureType == "Healthcare").ToList();
+    var foodDisplayed = Model.Where(item=>item.ExpenditureType == "Food").ToList();
+    var utilitiesDisplayed = Model.Where(item=>item.ExpenditureType == "Utilities").ToList();
+
+    var transportation = Model.Where(item=>item.ExpenditureType == "Transportation").ToList();
+    var education = Model.Where(item=>item.ExpenditureType == "Education").ToList();
+    var entertainment = Model.Where(item=>item.ExpenditureType == "Entertainment").ToList();
+    var clothing = Model.Where(item=>item.ExpenditureType == "Clothing").ToList();
+    var products = Model.Where(item=>item.ExpenditureType == "Products").ToList();   
+
+}
+
+
+
+<div style="position:absolute; left: 100px">
+<div style="position: absolute; left:400px; top:180px; margin-bottom: 40px">
+
+
+<div style="display: flex; gap: 100px; position:relative; right:60px; bottom: 50px;">
+    @if (housingDisplayed.Count() > 0) {
+        <div>
+            <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@housingDisplayed[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@housingDisplayed[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+                <img src="/pictures/house.png" width="50" height="50" style="vertical-align: middle;" />
+            </a>
+            <p>@housingDisplayed[0].ExpenditureType</p>
+            <p>@Math.Round(@housingDisplayed[0].TotalPrice, 3) @housingDisplayed[0].CurrencyType</p>
+        </div>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/house.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Housing</p>
+            <p>0.0</p>
+        </div>
+    }
+
+    @if (healthcareDisplayed.Count() > 0) {
+        <div>
+            <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@healthcareDisplayed[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@healthcareDisplayed[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+                <img src="/pictures/healthcare.png" width="50" height="50" style="vertical-align: middle;" />
+            </a>
+            <p>@healthcareDisplayed[0].ExpenditureType</p>
+            <p>@Math.Round(@healthcareDisplayed[0].TotalPrice, 3) @healthcareDisplayed[0].CurrencyType</p>
+        </div>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/healthcare.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Healthcare</p>
+            <p>0.0</p>
+        </div>
+    }
+    @if (foodDisplayed.Count() > 0) {
+        <div>
+            <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@foodDisplayed[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@foodDisplayed[0].ExpenditureType"  asp-route-DateOnfo="@ViewBag.DateInfo">
+                <img src="/pictures/food.png" width="50" height="50" style="vertical-align: middle;" /> 
+            </a>
+            <p>@foodDisplayed[0].ExpenditureType</p>
+            <p>@Math.Round(foodDisplayed.Sum(item => item.TotalPrice), 3) @foodDisplayed[0].CurrencyType</p>
+        </div>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/food.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Food</p>
+            <p>0.0</p>
+        </div>
+    }
+     @if (utilitiesDisplayed.Count() > 0) {
+        <div>
+            <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@utilitiesDisplayed[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@utilitiesDisplayed[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+                <img src="/pictures/utilities.png" width="50" height="50" style="vertical-align: middle;" />
+            </a>
+            <p>@utilitiesDisplayed[0].ExpenditureType</p>
+            <p>@Math.Round(utilitiesDisplayed.Sum(item => item.TotalPrice), 3) @utilitiesDisplayed[0].CurrencyType</p>
+        </div>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/utilities.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Utilities</p>
+            <p>0.0</p>
+        </div>
+    }
+
+    @if (transportation.Count() > 0) {
+        <div>
+            <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@transportation[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@transportation[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+                <img src="/pictures/bus.png" width="50" height="50" style="vertical-align: middle;" />
+            </a>
+            <p>@transportation[0].ExpenditureType</p>
+            <p>@Math.Round(transportation.Sum(item => item.TotalPrice), 3) @transportation[0].CurrencyType</p>
+        </div>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/bus.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Transportation</p>
+            <p>0.0</p>
+        </div>
+    }
+
+</div>
+
+
+
+<div style="position: absolute; right:730px; top:130px;">
+@if (education.Count() > 0) {
+    <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@education[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@education[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+        <img src="/pictures/education.png" width="50" height="50" style="vertical-align: middle;" />
+    </a>
+    <p>@education[0].ExpenditureType</p>
+    <p>@Math.Round(education.Sum(item => item.TotalPrice), 3) @education[0].CurrencyType</p>
+} else {
+    <div style="filter: grayscale(100%);">
+        <img src="/pictures/education.png" width="50" height="50" style="vertical-align: middle;" />
+        <p>Education</p>
+        <p>0.0</p>
+    </div>
+}
+@if (products.Count() > 0) {
+        <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@products[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@products[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+            <img src="/pictures/product.png" width="50" height="50" style="vertical-align: middle;" />
+        </a>
+        <p>@products[0].ExpenditureType</p>
+        <p>@Math.Round(products.Sum(item => item.TotalPrice), 3) @products[0].CurrencyType</p>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/product.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Products</p>
+            <p>0.0</p>
+        </div>
+    }
+</div>
+
+<div style="position: absolute; left:580px; top:133px;">
+    @if (clothing.Count() > 0) {
+        <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@clothing[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@clothing[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
+            <img src="/pictures/clothing.png" width="50" height="50" style="vertical-align: middle;" />
+        </a>
+        <p>@clothing[0].ExpenditureType</p>
+        <p>@Math.Round(clothing.Sum(item => item.TotalPrice), 3) @clothing[0].CurrencyType</p>
+    } else {
+        <div style="filter: grayscale(100%);">
+            <img src="/pictures/clothing.png" width="50" height="50" style="vertical-align: middle;" />
+            <p>Clothing</p>
+            <p>0.0</p>
+        </div>
+    }
+    @if (entertainment.Count() > 0) {
+    <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@entertainment[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@entertainment[0].ExpenditureType"  asp-route-DateOnfo="@ViewBag.DateInfo">
+        <img src="/pictures/entertainment.png" width="50" height="50" style="vertical-align: middle;" />
+    </a>
+    <p>@entertainment[0].ExpenditureType</p>
+    <p>@Math.Round(entertainment.Sum(item => item.TotalPrice), 3) @entertainment[0].CurrencyType</p>
+} else {
+    <div style="filter: grayscale(100%);">
+        <img src="/pictures/entertainment.png" width="50" height="50" style="vertical-align: middle;" />
+        <p>Entertainment</p>
+        <p>0.0</p>
+    </div>
+}
+    
+</div>
+
+    </div>
+
+
+
+<a asp-controller="Main" asp-action="InfoIncome">
+    <img class="action-gif" width="50" height="50" src="/pictures/income-page.gif" alt="income page">
+</a>
+    
+<div style="position:absolute; left:455px; top:270px">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Remove border around the chart */
+        #myDoughnutChart {
+            display: block;
+            border: none;
+        }
+    </style>
+
+    <div class="container">
+        <div class="centered-element">
+            <canvas id="myDoughnutChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var infoBodyData = @Html.Raw(Json.Serialize(Model));
+            console.log(infoBodyData)
+
+            // Initialize groupedData before using it
+            var groupedData = {};
+
+            infoBodyData.forEach(function (item) {
+                if (!groupedData[item.expenditureType]) {
+                    groupedData[item.expenditureType] = 0;
+                }
+                groupedData[item.expenditureType] += item.totalPrice;
+            });
+
+            var labels = Object.keys(groupedData);
+            var data = Object.values(groupedData);
+
+            var colorBackgroundBorder = {
+                "Housing": 'rgba(37, 162, 68, 1)', // #25a244
+                "Healthcare": 'rgba(239, 35, 60, 1)', // #ef233c
+                "Utilities": 'rgba(53, 143, 128, 1)', // #358f80
+                "Food": 'rgba(241, 135, 1, 1)', // #f18701
+                "Transportation": 'rgba(29, 211, 176, 1)', // #1dd3b0
+                "Education": 'rgba(3, 43, 67, 1)', // #032b43
+                "Entertainment": 'rgba(94, 96, 206, 1)', // #5e60ce
+                "Clothing": 'rgba(118, 120, 237, 1)', // #7678ed
+                "Products": 'rgba(187, 148, 87, 1)' // #bb9457
+            };
+
+            var colorBackground = {
+                "Housing": 'rgba(37, 162, 68, 0.6)', // #25a244
+                "Healthcare": 'rgba(239, 35, 60, 0.6)', // #ef233c
+                "Utilities": 'rgba(53, 143, 128, 0.6)', // #358f80
+                "Food": 'rgba(241, 135, 1, 0.6)', // #f18701
+                "Transportation": 'rgba(29, 211, 176, 0.6)', // #1dd3b0
+                "Education": 'rgba(3, 43, 67, 0.6)', // #032b43
+                "Entertainment": 'rgba(94, 96, 206, 0.6)', // #5e60ce
+                "Clothing": 'rgba(118, 120, 237, 0.6)', // #7678ed
+                "Products": 'rgba(187, 148, 87, 0.6)' // #bb9457
+            };
+
+            var ctx = document.getElementById('myDoughnutChart').getContext('2d');
+            var myDoughnutChart = new Chart(ctx, {
+                type: 'pie', // Change the type to 'pie'
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            ...labels.map(label => colorBackground[label])
+                            
+                        ],
+                        borderColor: [
+                            ...labels.map(label => colorBackgroundBorder[label])
+                        ],
+
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                }
+            });
+        });
+    </script>
+</div>
+</div>
+
+
+
+
+

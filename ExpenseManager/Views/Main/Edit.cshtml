@@ -1,0 +1,51 @@
+﻿@{
+	ViewBag.Title = "Edit";
+
+	ViewBag.CurrentyType = new List<string>()
+			{
+				"UAH","USD", "EUR","PLN"
+
+			};
+    ViewBag.ExpenditureType = new List<string>()
+			{
+				"Housing", 
+				"Food", 
+				"Transportation", 
+				"Healthcare", 
+				"Education", 
+				"Entertainment", 
+				"Insurance", 
+				"Consumer Goods", 
+				"Clothing and Footwear", 
+				"Financial Services", 
+				"Utilities"
+
+			};
+
+}
+@model Service.InfoBody
+
+
+<form asp-controller="Main" asp-action="Edit" method="post">
+    <input name="body" type="text" value="@Model.Body" required></input>
+
+    <input name="price" type="text" value="@Model.Price" required></input>
+
+	<select name="expenditureType" required>
+			<option value="@Model.ExpenditureType" disabled selected>@Model.ExpenditureType</option>
+			@foreach(var item in ViewBag.ExpenditureType) {
+				<option value="@item">@item</option>
+			}
+	</select>
+
+	<input name="prevcurrentyType" value="@Model.CurrentyType" hidden></input>
+
+    <select name="currentyType" required>
+        <option value="@Model.CurrentyType">@Model.CurrentyType</option>
+        @foreach(var item in ViewBag.CurrentyType) {
+            <option value="@item">@item</option>
+        }
+    </select>
+
+    <button style="color: green" type="submit">Edit</button>
+</form>

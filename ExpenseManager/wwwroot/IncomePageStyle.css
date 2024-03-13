@@ -1,0 +1,44 @@
+﻿.Income-icone {
+    display: flex;
+    position:absolute;
+    top:150px;
+    margin-left:140px
+    
+}
+    .Income-icone .item-container {
+        margin-right: 285px; /* Відступ між блоками */
+    }
+
+        /* Останньому блоку не потрібно мати відступу справа */
+        .Income-icone .item-container:last-child {
+            margin-right: 0; /* Відступ для останнього блоку */
+        }
+
+
+
+.diagram-center{
+    position:absolute;
+    left:600px;
+    bottom:10px;
+}
+.action-gif-costs {
+    cursor: pointer;
+    position: absolute;
+    top:320px;
+    left: 810px;    
+    transform: rotate(180deg);
+}
+
+
+.back-position{
+    position:relative;
+    top:600px;
+    font-size:20px;
+}
+
+.back-position a {
+    text-decoration: none;
+}
+.back-position a:active {
+    color:cornflowerblue;
+}

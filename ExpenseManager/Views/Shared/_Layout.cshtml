@@ -1,0 +1,263 @@
+﻿@{
+    ViewBag.CurrentyType = new List<string> { "UAH", "USD", "EUR", "PLN" };
+    ViewBag.ExpenditureType = new List<string>
+			{
+				"Housing", "Food", "Transportation", "Healthcare", "Education",
+				"Entertainment", "Products", "Clothing","Utilities"
+			};
+
+    ViewBag.SourceOfIncome = new List<string>()
+			{
+				"Job", "Business", "Freelance"
+			};
+
+    Dictionary<string, string> Icons = new Dictionary<string, string>()
+    {
+        {"Housing","/pictures/house.png"},
+        {"Healthcare", "/pictures/healthcare.png"},
+        {"Utilities","/pictures/home.png"}
+    };
+
+    
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/HistoryStyle.css">
+    
+</head>
+<body>
+ <style>
+        
+    </style>
+
+  
+        <div class="line">
+            <ul class="menu">
+                <li><a asp-controller="Main" asp-action="Start">Home</a> </li>                
+                <li><a asp-controller="Main" asp-action="History">History</a></li>
+                <li><a asp-controller="Main" asp-action="Review" asp-route-PresentTime="@DateTime.Now.ToString("MM-dd-yyyy")">Statistics</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    
+    
+    <div>     
+    
+        <div class="left-menu"></div>
+        <div class="right-menu"></div>
+        <div class="content">
+            @RenderBody()
+        </div>
+        
+        <button id="openModal" class="buttonForHref" asp-controller="Main" asp-action="Add">+</button> 
+
+<div id="modal" class="modal">
+    <div class="tabs">
+    <button class="tablink" onclick="openTab(event, 'expenses')" id="defaultOpen">Витрати</button>
+    <button class="tablink" onclick="openTab(event, 'income')">Доходи</button>
+    </div>
+
+<div id="expenses" class="tabcontent active">
+
+    <div class="position-add">
+        <h3 style="position:relative; left:10px;">Запис витрат</h3>
+    
+	    <form asp-controller="Main" asp-action="Add" method="post">
+
+		    <lable>Body</lable>
+            <br>
+		    <input name="body" type="text" required oninput="NoDigit(this)">
+            <br>
+            <br>
+		    
+            <lable>Expenditure Categories</lable>
+            <br>
+            
+		    <select name="expenditureType" required>
+			    <option value="" disabled selected>Expenditure type</option>
+			    @foreach(var item in ViewBag.ExpenditureType){
+				    <option value="@item">@item</option>
+			    }
+
+		    </select>
+            <br>
+            <br>
+
+
+		    <lable>Price</lable>
+            <br>            
+		    <input name="price" type="text" required oninput="replaceCommaWithDot(this)">
+            <br>
+            <br>
+
+		    <lable>Currenty type</lable>
+            <br>            
+			    <select name="currentyType" required>
+				    <option value="" disabled selected>Choose currenty type</option>
+				    @foreach(var item in ViewBag.CurrentyType) {
+					    <option value="@item">@item</option>
+				    }
+		    </select>	
+            <br>
+            <br> 
+
+		    <button width:100px height:100px class="colorGreen" type="submit">Add</button>
+            <button width:100px height:100px class="closeAdd colorRed">Cansel</button>
+	    </form>
+    </div>
+    <span id="close" class="close-button-second closeAdd">✖️</span>
+</div>
+
+<div id="income" class="tabcontent">
+    
+        <h3 style="position:relative; left:7px;">Запис доходів</h3>
+        <form asp-controller="Main" asp-action="AddIncomeInformation" method="post">
+            <div class="position-add position-modal-incom">
+
+                
+
+                <lable>Income</lable>
+                <br>
+                <input name="income" type="text" required oninput="replaceCommaWithDot(this)"/>
+                <br>
+                <br>
+
+                <lable>Currenty type</lable>
+                <br>
+
+                <select name="currency" required>
+                    <option value="" disabled selected>Choose currenty type</option>
+				            @foreach(var item in ViewBag.CurrentyType) {
+					            <option value="@item">@item</option>
+				            }
+                </select>
+                <br>
+                <br>
+
+                <lable>Source of income</lable>
+                <br>
+                <select name="sourceOfIncome" required>
+                    <option value="" disabled selected>Choose type source of income </option>
+                    @foreach(var item in ViewBag.SourceOfIncome) {
+					            <option value="@item">@item</option>
+				            }
+                </select>
+                <br>
+                <br>
+            </div>
+
+            <div class="position-modal-incom">
+            
+                <button width:100px height:100px class="colorGreen" type="submit">Add</button>
+                <button width:100px height:100px class="closeAdd colorRed">Cansel</button>
+
+            </div>
+        </form>
+
+
+    
+</div>
+
+    <span id="close" class="close-button closeAdd">✖️</span>
+</div> 
+
+
+
+<script>   
+    const leftDiv = document.querySelector('.left-menu');
+    const rightDiv = document.querySelector('.right-menu');
+    let leftElementCount = 0;
+    let rightElementCount = 0;
+
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createCurrencySymbol(container, countRef) {
+        if (countRef >= 20) return;
+
+        const currencies = ['/ActioImage/dollar.png', '/ActioImage/euro.png', '/ActioImage/uah.png', '/ActioImage/zl.png', '/ActioImage/arrows.png', '/ActioImage/arrowDown.png'];
+        const currency = document.createElement('img');
+        currency.src = currencies[Math.floor(Math.random() * currencies.length)];
+        currency.classList.add('currency-symbol');
+        currency.style.left = `${getRandomNumber(0, container.clientWidth - 30)}px`;
+        currency.style.animationDuration = `${getRandomNumber(2, 5)}s`;
+        container.appendChild(currency);
+        countRef++;
+        currency.addEventListener('animationend', () => {
+            currency.remove();
+            countRef--;
+        });
+        if (container === leftDiv) {
+            leftElementCount = countRef;
+        } else if (container === rightDiv) {
+            rightElementCount = countRef;
+        }
+    }
+
+    setInterval(() => {
+        createCurrencySymbol(leftDiv, leftElementCount);
+        createCurrencySymbol(rightDiv, rightElementCount);
+    }, 600);
+</script>
+
+
+<script>
+    const openModal = document.getElementById('openModal')
+    const model = document.getElementById('modal')    
+    openModal.addEventListener('click', function(){
+        model.style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+    });
+   const closeButtons = document.querySelectorAll(".closeAdd");
+
+closeButtons.forEach(button => {
+    button.addEventListener('click', function(){
+        model.style.display = 'none'; // Закриваємо модальне вікно
+        document.getElementById('overlay').style.display = 'none';
+    });
+});
+
+
+            function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.getElementById("defaultOpen").click();
+
+
+
+    function replaceCommaWithDot(input) {
+    input.value = input.value.replace('.', ',');
+    input.value = input.value.replace(/[^0-9,.]/g, '');
+    
+    }
+
+
+    function NoDigit(input){
+        input.value = input.value.replace(/\d/g, '');
+        input.value = input.value.replace(/[< | ? № % ! ~ \ / : ; # $ % ^ & * _ - + =]/g, '');
+
+    }
+</script>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+</body>
+</html>

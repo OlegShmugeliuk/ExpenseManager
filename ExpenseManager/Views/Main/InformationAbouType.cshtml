@@ -1,0 +1,36 @@
+﻿@{
+	ViewBag.Title = "Info";
+}
+
+@model IEnumerable<Service.InfoBody>
+
+<link rel="stylesheet" href="/startStyle.css">
+
+
+
+<p class="lablePosition">Spending on category "@ViewBag.InfoType" during @ViewBag.DateInfo</p>
+
+<div class="back-position-start">
+    <a asp-controller="Main" asp-action="Start">◀ Back</a>
+</div>
+
+ <div class="posiotionInfoAbout">     
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Essence</th>
+                <th>Expenditure type</th>
+                <th>Currenty type</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        @foreach(var item in Model) {
+            <tr>
+                <td>@item.Body</td>
+                <td>@item.ExpenditureType</td>
+                <td>@item.CurrentyType</td>
+                <td>@item.Price</td>
+            </tr>
+        }
+    </table>
+</div>

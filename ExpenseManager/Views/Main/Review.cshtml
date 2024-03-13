@@ -1,0 +1,402 @@
+﻿@using Service
+@model HistoryViewModel
+
+
+@{
+  ViewBag.Title = "Statistics";
+}
+
+@{
+
+    
+    double sumMonth = 0.0, sumYear=0.0;
+    
+    
+    
+}
+<link rel="stylesheet" href="/startStyle.css">
+
+<style>
+    
+
+  .button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width:200px;
+    height:50px;
+  }
+
+    
+
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  .chart {
+        width: 50%;
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+    }
+    .bar {
+        height: 20px;
+        border-radius: 10px;
+        background: linear-gradient(to right, blue, blue);
+    }
+    .red {
+        background-color: red;
+    }
+    .blue {
+        background-color: blue;
+    }
+    .container-buttom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top:8%;
+    left: 700px
+    }
+</style> 
+
+<div class="container-buttom">
+        <button  class="button" id="PeriodStatistic">Сhange period</button>
+</div>
+
+<div class="overlay" id="overlayStatictic"></div>
+
+<div class="popup" id="popupStatistic">
+    <span class="close" onclick="closePopup()">✖️</span>
+
+     <div class="periods">Periods</div>
+
+     <div class="serch-style">
+
+            <form asp-controller="Main" asp-action="Review" method="post">
+                <div class="flex-1">
+                    <input name="day" class="form-input" type="date" />
+                    <span class="text-red"></span>
+                </div>
+                <button type="submit">Search</button>
+            </form>
+
+        </div>
+
+
+         @{
+            DateTime currentDate = DateTime.Now;
+
+            
+            DateTime endWeek = currentDate.AddDays(0);
+
+            
+            DateTime startWeek = currentDate.AddDays(-7);
+
+            
+            ViewBag.StartOfWeek = startWeek.ToString("dd.MM.yyyy");
+            ViewBag.EndOfWeek = endWeek.ToString("dd.MM.yyyy");
+        }
+
+        
+
+        <div class="month-style">
+
+            <form id="monthForm" asp-controller="Main" asp-action="Review" method="post">
+                <select name="month" id="monthSelect">
+                    <option value="">Month</option>
+                    @foreach (var key in ViewBag.Month.Keys){
+                        <option value="@ViewBag.Month[key]">@key</option>
+                    }
+                </select>    
+            </form>
+        </div>
+
+        <div class="year-style">
+            <form id="YearForm" asp-controller="Main" asp-action="Review" method="post">
+                <select id="YearSelect" name="year">
+                    <option value="">Year</option>
+                    @foreach (var key in ViewBag.Year){
+                        <option value="@key">@key</option>
+                    }
+                </select> 
+            </form>
+        </div>
+
+
+        <div class="all-style">
+            <form asp-controller="Main" asp-action="Review" method="post">
+                <input type="hidden" name="allTime" value="01.01.0001" />
+                <button type="submit">All time</button>
+            </form>
+        </div>    
+</div>
+
+
+<script>
+    document.getElementById('PeriodStatistic').addEventListener('click', function(){
+        document.getElementById('popupStatistic').style.display = 'block';
+        document.getElementById('overlayStatictic').style.display = 'block';
+    });
+
+    function closePopup(){
+        document.getElementById('popupStatistic').style.display = 'none';
+        document.getElementById('overlayStatictic').style.display = 'none';
+    }
+
+
+    var form = document.getElementById('monthForm');   
+    var select = document.getElementById('monthSelect');
+    select.addEventListener('change', function() {       
+        form.submit(); // Виправлено на form.submit()
+    });
+
+     var formYear = document.getElementById('YearForm');   
+            var select = document.getElementById('YearSelect');
+                select.addEventListener('change', function() {
+                
+                formYear.submit();
+            });
+</script>
+
+
+<div class="position-detail-info">
+    @if(@ViewBag.Balance >= 0){
+        <p style="color: #009879;">Баланс @ViewBag.Balance UAH</p>
+    }
+    else{
+        <p style="color: red;">Баланс @ViewBag.Balance UAH</p>
+    }
+    
+    <p style="color: #009879;">Дохід: @ViewBag.TodayIncom</p>
+    <p style="color: red;">Втрати: @ViewBag.TodayCosts</p>
+    <p style="color: red;">Витрати - день(сер.) @ViewBag.AverageDay UAH</p>
+
+    @if (ViewBag.AverageOfMonth != null)
+    {
+        <p style="color: red;">Витрати - місяць(сер.) @ViewBag.AverageOfMonth</p>
+    }
+</div>
+@* <p>Рік @sumYear</p> *@
+<!-- У вашому HTML -->
+<canvas id="myChart" style="width: 1050px; height: 260px; position: relative; top:110px"></canvas>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var infoBodies = @Html.Raw(Json.Serialize(ViewBag.InformationAboutCosts));
+
+    var Labels = ['Income', 'Expenses']; // Початкові елементи: доходи та витрати
+    var data = [parseFloat('@ViewBag.TodayIncom' || '0'), parseFloat('@ViewBag.TodayCosts' || '0')]; // Початкові дані: доходи та витрати
+
+    var colorBackgroundBorder = {
+        "Income":'rgba(54, 162, 235, 1)',
+        'Expenses': 'rgba(255, 99, 132, 1)',
+        "Housing": 'rgba(37, 162, 68, 1)',
+        "Healthcare": 'rgba(239, 35, 60, 1)',
+        "Utilities": 'rgba(53, 143, 128, 1)',
+        "Food": 'rgba(241, 135, 1, 1)',
+        "Transportation": 'rgba(29, 211, 176, 1)',
+        "Education": 'rgba(3, 43, 67, 1)',
+        "Entertainment": 'rgba(94, 96, 206, 1)',
+        "Clothing": 'rgba(118, 120, 237, 1)',
+        "Products": 'rgba(187, 148, 87, 1)'
+    };
+
+    var colorBackground = {
+        "Income":'rgba(54, 162, 235, 0.2)',
+        'Expenses': 'rgba(255, 99, 132, 0.2)',
+        "Housing": 'rgba(37, 162, 68, 0.6)',
+        "Healthcare": 'rgba(239, 35, 60, 0.6)',
+        "Utilities": 'rgba(53, 143, 128, 0.6)',
+        "Food": 'rgba(241, 135, 1, 0.6)',
+        "Transportation": 'rgba(29, 211, 176, 0.6)',
+        "Education": 'rgba(3, 43, 67, 0.6)',
+        "Entertainment": 'rgba(94, 96, 206, 0.6)',
+        "Clothing": 'rgba(118, 120, 237, 0.6)',
+        "Products": 'rgba(187, 148, 87, 0.6)'
+    };
+
+    infoBodies.forEach(item => {
+        if (!Labels.includes(item.expenditureType)) {
+            Labels.push(item.expenditureType);
+            data.push(item.price);
+        }
+    });
+
+    var dataObject = {};
+    Labels.forEach(function(label, index) {
+        dataObject[label] = data[index];
+    });
+
+    var datasets = Labels.map(function(label) {
+        var value = dataObject[label];
+        return {
+            label: label,
+            data: [value],
+            backgroundColor: colorBackground[label],
+            borderColor: colorBackgroundBorder[label],
+            borderWidth: 1
+        };
+    });
+
+datasets.sort(function(a, b) {
+    return a.data[0] - b.data[0]; // Сортування за зростанням значень data
+});
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Statistics"],
+            datasets: datasets
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+</script>
+
+
+
+
+
+<div class="bottom-statistic"  id="line-statistic"></div>
+
+    <script>
+
+        var Images = {
+            "Housing":'/pictures/house.png',
+            "Healthcare":'/pictures/healthcare.png',
+            "Utilities": '/pictures/utilities.png',
+            "Food":'/pictures/food.png',
+            "Transportation":'/pictures/bus.png',
+            "Education":'/pictures/education.png',
+            "Entertainment":'/pictures/entertainment.png',
+            "Clothing":'/pictures/clothing.png',
+            "Products":'/pictures/product.png',
+        };
+        var colorBackground = {
+            "Housing": '#25a244',
+            "Healthcare": '#ef233c',
+            "Utilities": '#358f80',
+            "Food": '#f18701',
+            "Transportation": '#1dd3b0',
+            "Education": '#032b43',
+            "Entertainment": '#5e60ce',
+            "Clothing": '#7678ed',
+            "Products": '#bb9457'
+    };
+
+    var mergedItem = {};
+
+    var total = 0.0;
+    infoBodies.forEach(function (item) {
+        if(mergedItem[item.expenditureType]){
+            mergedItem[item.expenditureType] +=item.price
+        }else{
+            mergedItem[item.expenditureType] = item.price
+        }
+        total +=item.price
+    });
+    
+
+   var lineStatisticContainer = document.getElementById('line-statistic');
+
+Object.keys(mergedItem).forEach(function (key) {
+    var percentage = (mergedItem[key] / total) * 100;
+
+    var containerDiv = document.createElement('div');
+
+    // Додавання ідентифікатора, щоб звертатися до нього пізніше за допомогою CSS
+    containerDiv.id = 'centeredDiv';
+
+        
+    containerDiv.style.position = 'relative';
+    
+    containerDiv.style.left = '25%';
+    
+
+    // Додавання контейнера на сторінку
+    document.body.appendChild(containerDiv);
+
+    // Додавання першого div до контейнера
+    var line = document.createElement('div');
+    line.innerHTML = `<img src="${Images[key]}" alt="${key}" style="height: 20px; margin-right: 5px; position: relative; top: 10px;"><span style="position: relative; top:8px"> ${key}: ${percentage.toFixed(2)}<span>%`;
+    containerDiv.appendChild(line);
+
+    // Додавання другого div до контейнера
+    var chartContainer = document.createElement('div');
+    chartContainer.className = 'chart';
+    containerDiv.appendChild(chartContainer);
+
+    // Створення і додавання елементів для другого div
+    var bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.width = "100%";
+    bar.style.background = `linear-gradient(to right, ${colorBackground[key]} ${percentage}%, gray ${percentage}%)`;
+    chartContainer.appendChild(bar);
+
+    // Додавання контейнера з усіма елементами на сторінку
+    lineStatisticContainer.appendChild(containerDiv);
+});
+
+</script> 
+
+    <script>
+        var dataForHeight = @Html.Raw(Json.Serialize(ViewBag.InformationAboutCosts));
+        console.log(dataForHeight);
+
+
+    var count = [];
+    dataForHeight.forEach(item => {
+        if (!count.includes(item.expenditureType)) {
+            count.push(item.expenditureType);
+        }
+    });
+    
+    // Функція для оновлення розмірів .left-menu
+    function updateLeftMenuHeight() {
+    
+    var windowHeight = window.innerHeight; // Висота вікна браузера
+    
+    var leftMenu = document.querySelector('.left-menu'); // Елемент .left-menu
+    var rightMenu = document.querySelector('.right-menu');
+
+    // Задаємо нову висоту .left-menu
+    
+    for (var i = 0; i < count.length; i++) { // Виправлено Lenght на length
+         if(count.length===2||count.length===1 ){
+             windowHeight = 707;
+             break;
+         }else{
+             windowHeight += 50;
+         }
+        
+    }
+    
+    leftMenu.style.height = windowHeight + 'px'; // Виправлено value на 'px'
+    rightMenu.style.height = windowHeight + 'px'; // Виправлено value на 'px'
+}
+
+
+    // Оновлюємо розміри .left-menu при завантаженні сторінки та при зміні розміру вікна
+    window.onload = updateLeftMenuHeight;
+    window.onresize = updateLeftMenuHeight;
+</script>

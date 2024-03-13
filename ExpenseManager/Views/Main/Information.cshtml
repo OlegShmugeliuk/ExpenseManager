@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Information";    
+}
+
+ @model IEnumerable<Service.InfoBody>
+
+<table>
+    <tr>
+        <th>Essence</th>
+        <th>Expenditure type</th>
+        <th>Currenty type</th>
+        <th>Price</th>
+    </tr>
+    @foreach(var item in Model) {        
+        <tr>
+            <td>@item.Body</td>
+            <td>@item.ExpenditureType</td>
+            <td>@item.CurrentyType</td>
+            <td>@Math.Round(item.Price,3)</td>
+
+            
+            <td><a asp-controller="Main" asp-action="Delete" asp-route-IdBody="@item.Id">Delete</a></td>
+        </tr>
+    }
+</table>
+
+

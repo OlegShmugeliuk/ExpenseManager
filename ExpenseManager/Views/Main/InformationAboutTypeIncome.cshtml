@@ -1,0 +1,33 @@
+﻿@{
+	ViewBag.Title = "Info";
+}
+
+@model IEnumerable<Service.IncomePerson>
+<link rel="stylesheet" href="/IncomePageStyle.css">
+
+<p class="lablePosition">Spending on category "@ViewBag.InfoType" during @ViewBag.DateInfo</p>
+
+<div class="back-position">
+    <a asp-controller="Main" asp-action="InfoIncome">◀ Back</a>
+</div>
+ <div class="posiotionInfoAbout">     
+    <table class="styled-table">
+        <thead>
+            <tr>
+                
+                <th>Source Of income</th>
+                <th>Currenty type</th>
+                <th>Income</th>
+            </tr>
+        </thead>
+        @foreach(var item in Model) {
+            <tr>
+                
+                <td>@item.SourceOfIncome</td>
+                <td>@item.Currency</td>
+                <td>@item.Income</td>                
+            </tr>
+        }
+    </table>
+</div>
+

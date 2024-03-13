@@ -1,0 +1,72 @@
+﻿.edit-modal {
+    display: none;
+    width: 400px;
+    height: 360px;
+    background-color: white;
+    border-radius: 5px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    background-color: #ced4da;
+}
+
+    .edit-modal h3 {
+        position: relative;
+        left: 165px;
+    }
+
+    .edit-modal lable, select, input {
+        position: relative;
+        left: 30px;
+    }
+
+    .edit-modal select, input {
+        margin-top: 10px;
+        border: 1px solid;
+        border-radius: 5px;
+    }
+
+    .edit-modal button {
+        position: relative;        
+    }
+
+.EditSubmit {   
+    width: 80px;
+    height: 23px;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    bottom:2px;    
+    left: 180px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+
+.closeEdit {
+    width: 80px;
+    height: 23px;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    bottom: 25px;
+    left: 285px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.closeEdit:hover, .EditSubmit:hover {
+    
+    color: black;
+   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: black;
+    background-color: #999999;
+    
+}
+
+#closeEditImage {
+    position: relative;
+    bottom: 45px;
+    left:350px;
+    cursor:pointer;
+}

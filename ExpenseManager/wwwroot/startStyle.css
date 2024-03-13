@@ -1,0 +1,249 @@
+﻿
+
+/* Залишені стилі для вкладок і контенту */
+
+
+
+.positionDiv {
+    position: absolute;
+    left: 500%; 
+    top: 80px;
+}
+
+.exchange-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    .exchange-table th, .exchange-table td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .exchange-table th {
+        background-color: #fff75e;
+    }
+
+.BuyCell {
+    color: white;
+    background-color: #009879
+}
+
+.SaleCell {
+    color: white;
+    background-color: #990000
+}
+
+.currency-Type {
+    color: black;
+    background-color: #ffea00
+}
+
+.container-buttom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 8%;
+    left: 700px
+}
+
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ced4da;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 9999;
+    width: 290px;
+    height: 170px;
+    border-radius: 5px;
+}
+
+.serch-style {
+    margin-bottom: 10px;
+    height: 30%;
+}
+
+    .serch-style button {
+        position: relative;
+        bottom: 29px;
+        left: 95px;
+        margin-left: 35%;
+        background-color: #007bff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        transition: 0.3s;
+        border-radius: 3px;
+        color: aliceblue;
+        width: 80px;
+        height: 25px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+        .serch-style button:hover {
+            color: black;
+            background-color: #8eecf5;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .serch-style button.active {
+            background-color: #ccc;
+        }
+
+    .serch-style input {
+        height: 30px;
+        width: 150px;
+        position: relative;
+        right: 30px;
+        margin-top: 3%;
+    }
+
+.all-style {
+    margin-top: 3px;
+    width: 200px;
+    height: 50px;
+    margin-left: 20px;
+    position: relative;
+    bottom: 30px;
+}
+
+    .all-style button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 3px;
+        margin-top: 5px;
+        margin-left: 75px;
+        width: 150px;
+        height: 40px;
+        border: none;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+        position: relative;
+        right: 10px;
+    }
+
+        .all-style button:hover {
+            color: black;
+            background-color: #8eecf5;
+            border: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .all-style button.active {
+            background-color: #e0aaff;
+        }
+
+.month-style {
+    margin-bottom: 10px;
+    width: 0px;
+}
+
+    .month-style select {
+        border-radius: 3px;
+        width: 118px;
+        color: white;
+        height: 25px;
+        position: relative;
+        right: 150px;
+        background-color: #007bff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+        .month-style select:hover {
+            color: black;
+            background-color: #8eecf5;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+    .month-style option:hover {
+        color: black;
+        background-color: #8eecf5;
+    }
+
+.year-style {
+    margin-bottom: 10px;
+    position: relative;
+    bottom: 35px;
+    left: 130px;
+    width: 80px;
+}
+
+    .year-style select {
+        border-radius: 3px;
+        color: white;
+        background-color: #007bff;
+        width: 118px;
+        height: 25px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    }
+
+        .year-style select:hover {
+            color: black;
+            background-color: #8eecf5;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+.periods {
+    margin-bottom: 5px;
+    position: relative;
+    bottom: 5px;
+    color: #370617;
+    font-size: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+}
+
+/* Стилі для попап вікна */
+
+
+
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.item {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.column {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0 10px;
+}
+
+.item > div {
+    margin-bottom: 10px; /* Додамо відступ між елементами */
+}
+
+.test-style {
+    position: relative;
+    top: 50px;
+}
+
+.back-position-start {
+    position: relative; /* Фіксована позиція відносно вікна браузера */
+    top:605px;
+    font-size: 20px;
+}

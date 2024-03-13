@@ -1,0 +1,135 @@
+﻿@{
+	ViewBag.Title = "Add";
+}
+
+<style>
+   /*  body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    } */
+    .tabs {
+        overflow: hidden;
+        border-bottom: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+    .tabs button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+    .tabs button:hover {
+        background-color: #ddd;
+    }
+    .tabs button.active {
+        background-color: #ccc;
+    }
+    .tabcontent {
+        display: none;
+        padding: 20px;
+        border-top: 1px solid #ccc;
+    }
+    .tabcontent.active {
+        display: block;
+    }
+</style>
+
+	<div class="tabs">
+    <button class="tablink" onclick="openTab(event, 'expenses')" id="defaultOpen">Витрати</button>
+    <button class="tablink" onclick="openTab(event, 'income')">Доходи</button>
+</div>
+
+<div id="expenses" class="tabcontent active">
+    <h3>Запис витрат</h3>
+    
+	<form asp-controller="Main" asp-action="Add" method="post">
+
+		<lable>Body</lable>
+		<input name="body" type="text" required ></input>
+
+		<lable>Expenditure Categories</lable>
+		<select name="expenditureType" required>
+			<option value="" disabled selected>Expenditure type</option>
+			@foreach(var item in ViewBag.ExpenditureType){
+				<option value="@item">@item</option>
+			}
+
+		</select>
+
+		<lable>Price</lable>
+		<input name="price" type="text" pattern="[0-9]+([.,][0-9]+)?" required ></input>
+
+
+
+
+		<lable>Currenty type</lable>
+			<select name="currentyType" required>
+				<option value="" disabled selected>Choose currenty type</option>
+				@foreach(var item in ViewBag.CurrentyType) {
+					<option value="@item">@item</option>
+				}
+		</select>	
+
+		<button style="color: green" type="submit">Add</button>
+	</form>
+
+</div>
+
+<div id="income" class="tabcontent">
+    <h3>Запис доходів</h3>
+    
+    <form asp-controller="Main" asp-action="AddIncomeInformation" method="post">
+
+    <lable>Income</lable>
+    <input name="income" type="number" required/>
+    </br>
+
+    <lable>Currenty type</lable>
+    <select name="currency" required>
+        <option value="" disabled selected>Choose currenty type</option>
+				@foreach(var item in ViewBag.CurrentyType) {
+					<option value="@item">@item</option>
+				}
+    </select>
+
+    </br>
+    <lable>Source of income</lable>
+    <select name="sourceOfIncome" required>
+        <option value="" disabled selected>Choose type source of income </option>
+        @foreach(var item in ViewBag.SourceOfIncome) {
+					<option value="@item">@item</option>
+				}
+    </select>
+    </br>
+    <button type="submit" style="color: green">Add</button>
+
+    </form>
+
+
+
+</div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.getElementById("defaultOpen").click();
+</script>
+
+

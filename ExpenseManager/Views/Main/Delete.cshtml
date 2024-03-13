@@ -1,0 +1,22 @@
+﻿
+@{
+	ViewBag.Title="Delete";
+    ViewBag.CurrentyType = new List<string>()
+			{
+				"UAH","USD", "EUR","PLN"
+
+			};
+}
+@model Service.InfoBody
+
+
+<form asp-controller="Main" asp-action="Delete" method="post">
+    <input name="body" type="text" value="@Model.Body" readonly></input>
+
+    <input name="price" type="text" value="@Model.Price" readonly></input>
+    
+    <input name="currentyType" value="@Model.CurrentyType" readonly></input>        
+    
+
+    <button style="color: green" type="submit">Edit</button>
+</form>

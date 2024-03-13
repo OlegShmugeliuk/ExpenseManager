@@ -1,0 +1,382 @@
+﻿@using Service
+@model HistoryViewModel
+
+@{
+    ViewBag.Title = "History";
+
+    ViewBag.CurrentyType = new List<string> { "UAH", "USD", "EUR", "PLN" };
+    ViewBag.ExpenditureType = new List<string>
+			{
+				"Housing", "Food", "Transportation", "Healthcare", "Education",
+				"Entertainment", "Clothing", "Products",
+                "Utilities", "Job", "Business", "Freelance"
+			};
+    int ItemId = 0;
+}
+
+<style>
+    .hidden-list-currency {
+    display: none;
+    position: fixed;    
+
+    transform: translate(-50%, -50%);
+    background-color: white;
+    
+    padding: 10px;
+    border: 1px solid #ccc;
+    z-index: 9999;    
+}
+
+.hidden-message {
+    display: none;
+    position: fixed;    
+    top: 16%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    
+   
+    padding: 10px;
+    
+    z-index: 9999;
+}
+.hidden-message select{
+    width:120px;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9998;
+    display: none;
+}
+
+
+</style>
+
+<div style="position:relative; top:35px; left:150px;">
+@foreach (var date in ViewBag.DatePost)
+{
+    <h2>@date</h2>
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Body</th>
+                <th>Expenditure Type</th>
+                <th>Currency Type</th>
+                <th>Price</th>
+                <th>Convert</th>
+                <th>Option</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.infoBodies.Where(x => x.postDateTime.Value.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture) == date))
+            {
+                <tr>                    
+                    <td>@item.Body</td>
+                    <td>@item.ExpenditureType</td>
+                    <td>@item.CurrentyType</td>
+                    <td>@Math.Round(item.Price, 2)</td>
+                    <td>
+                        @* <a asp-controller="Main" asp-action="Edit" asp-route-IdBody="@item.Id">Сonvert currency ↓↑</a> *@
+                        <div class="hidden" data-item-id="@item.Id">
+                            <a style="text-decoration: none; color: rgb(0, 0, 0);" href="">Convert ⇅</a>
+                        </div>                       
+                    </td>
+                    <td>
+                    
+                        <div class="history-button">
+                            <button width="100px" height="100px" data-id="@item.Id" class="colorBlue Edit">Edit</button>
+                            <button width="100px" height="100px" id="@item.Id" class="closeAdd colorRed Delete" onclick="handleButtonClick(this)">Delete</button>
+
+                            <script>
+                                function handleButtonClick(button) {
+                                    var itemId = button.id;
+                                    // Записуємо id кнопки в змінну ItemId
+                                    var ItemIdElement = document.getElementById('ItemId');
+                                    if (ItemIdElement) {
+                                        ItemIdElement.value = itemId;
+                                    }
+                                    console.log(itemId); // Виводимо id кнопки в консоль
+                                    
+                                }
+                            </script>
+
+                        </div>    
+                      </td>
+                </tr>
+            }
+            @foreach (var item in Model.incomePersons.Where(x => x.IncomeTime.Value.ToString("dd MMMM yyyy", System.Globalization.CultureInfo.InvariantCulture) == date))
+            {
+                <tr>                    
+                    <td>-</td>
+                    <td>@item.SourceOfIncome</td>
+                    <td>@item.Currency</td>
+                    <td>@Math.Round(item.Income ?? 0,2)</td>
+                    <td>
+                        <div class="hidden" data-item-id="@item.Id">
+                            <a style="text-decoration: none; color: rgb(0, 0, 0);" href="">Convert ⇅</a>
+                        </div>   
+                    </td>
+                    <td>
+                    <div class="history-button">
+                          <button width="100px" height="100px" data-id="@item.Id" class="colorBlue Edit">Edit</button>
+                            <button width="100px" height="100px" id="@item.Id" class="closeAdd colorRed Delete" onclick="handleButtonClick(this)">Delete</button>
+
+                            <input type="hidden" id="ItemId" />
+
+
+                        </div>    
+                      </td>                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+</div>
+
+
+
+<div class="edit-modal">
+
+<form asp-controller="Main" asp-action="EditInformation" method="post">
+            <input hidden name="Id" value="">
+            <h3>Edit item</h3>
+            <span id="closeEditImage" class="closeAdd">✖️</span>
+            
+            <lable>Body</lable>    
+            <br>
+		    <input name="body" type="text" value="" required oninput="NoDigit(this)">
+            <br>
+            <br>
+		    
+            <lable>Expenditure Categories</lable>
+            <br>
+            
+		    <select name="expenditureType" required>
+			    <option value="" disabled selected>Expenditure type</option>
+			    @foreach(var item in ViewBag.ExpenditureType){
+				    <option value="@item">@item</option>
+			    }
+
+		    </select>
+            <br>
+            <br>
+
+
+		    <lable>Price</lable>
+            <br>            
+		    <input name="price" type="text" required oninput="replaceCommaWithDot(this)">
+            <br>
+            <br>
+		    <lable>Currenty type</lable>
+            <br>            
+			    <select name="currentyType" required>
+				    <option value="" disabled selected>Choose currenty type</option>
+				    @foreach(var item in ViewBag.CurrentyType) {
+					    <option value="@item">@item</option>
+				    }
+		    </select>	
+            <br>
+            <br> 
+
+		    <button class="colorGreen EditSubmit" type="submit">Edit</button>
+            
+    </form>
+    <button class="closeAdd colorRed closeEdit" id="closeEdit">Cansel</button>
+
+</div>
+
+<div id="DeleteModal" class="modalDelete">
+    <h3>You definitely want to delete this item ?</h3>
+    <span id="closeEditImade" class="close-button-third closeAdd">✖️</span>
+    
+    <form asp-controller="Main" asp-action="Delete" method="post" class="positionOk">
+        <input type="hidden" name="IdBody" value="" id="IdBody" />    
+        <button type="submit" class="colorGreen positionButtonOk"  id="OkDelete">Ok</button>                
+    </form>
+    
+    <button class="colorRed positionButtonCancel" id="CancelDelete">Cancel</button>
+    
+    
+</div>
+<div class="overlay" id="Overlay"></div>
+
+<div class="hidden-message" id="hiddenMessage">
+
+    <form id="CurrentyFrom" asp-controller="Main" asp-action="Edit" method="post">
+
+    
+    <input name="itemId" id="itemId" type="hidden" value="" />
+
+
+
+        <select id="CurrentySelect" name="currentyType">
+            <option hidden>Chose currenty</option>
+                @foreach(var item in ViewBag.CurrentyType) {
+                    <option value="@item">@item</option>
+                }
+        </select>
+    </form>
+</div>
+
+
+<script src="/Script/HistoryScript.js"></script>
+
+
+
+
+<script>
+   var infoBodies = @Html.Raw(Json.Serialize(Model.infoBodies));
+    var incomePersons = @Html.Raw(Json.Serialize(Model.incomePersons));
+
+    // Тепер ви можете використовувати infoBodies та incomePersons в JavaScript
+    console.log(infoBodies);
+    console.log(incomePersons);
+
+
+
+    document.querySelectorAll('.Delete').forEach(item => {
+        item.addEventListener('click', function(event) {            
+            document.getElementById('DeleteModal').style.display = 'block';
+            document.getElementById('Overlay').style.display = 'block';
+
+            var itemId = item.getAttribute('data-id');                       
+            console.log('Clicked button id:', itemId);
+        });
+    });
+
+    function replaceCommaWithDot(input) {
+        input.value = input.value.replace('.', ',');
+        input.value = input.value.replace(/[^0-9,.]/g, '');
+        
+    }
+
+
+    function NoDigit(input){
+        input.value = input.value.replace(/\d/g, '');
+        input.value = input.value.replace(/[< | ? № % ! ~ \ / : ; # $ % ^ & * _ - + =]/g, '');
+
+    }
+
+    document.querySelectorAll('.Edit').forEach(item => {
+        item.addEventListener('click', function(event) { 
+            var itemId = parseFloat(item.getAttribute('data-id'));                       
+            console.log(itemId)
+            var income = incomePersons.find(item => item.id === itemId);
+            var costs = infoBodies.find(item => item.id === itemId);
+
+            if(income){
+                var expenditureTypeSelect = document.getElementsByName('expenditureType')[0];
+                expenditureTypeSelect.value = income.sourceOfIncome;
+
+                var Body = document.getElementsByName('body')[0];
+                Body.value = "-";
+
+                var Price = document.getElementsByName('price')[0];
+                Price.value = parseFloat(income.income.toFixed(2));
+
+                var Currency = document.getElementsByName('currentyType')[0];
+                Currency.value = income.currency;
+
+                var Id = document.getElementsByName('Id')[0];
+                Id.value = income.id;
+            }
+            else if(costs){
+                var expenditureTypeSelect = document.getElementsByName('expenditureType')[0];
+                expenditureTypeSelect.value = costs.expenditureType;
+
+                var Body = document.getElementsByName('body')[0];
+                Body.value = costs.body;
+
+                var Price = document.getElementsByName('price')[0];
+                Price.value = parseFloat(costs.price.toFixed(2));
+
+                var Currency = document.getElementsByName('currentyType')[0];
+                Currency.value = costs.currentyType;
+
+                var Id = document.getElementsByName('Id')[0];
+                Id.value = costs.id;
+            }
+
+            
+
+            console.log(income); 
+
+
+            document.querySelector('.edit-modal').style.display = 'block';
+            document.getElementById('Overlay').style.display = 'block';            
+
+            
+                     
+
+            
+            });
+        });
+    
+</script>
+
+<script>
+    var element = document.querySelector('.content');
+    var rect = element.getBoundingClientRect();
+
+    var width = rect.width;
+    var height = rect.height;
+
+    console.log("Width: " + width + ", Height: " + height);
+
+
+function updateLeftMenuHeight() {
+    
+     
+    
+    var leftMenu = document.querySelector('.left-menu'); // Елемент .left-menu
+    var rightMenu = document.querySelector('.right-menu');
+    
+    leftMenu.style.height = height + 'px'; 
+    rightMenu.style.height = height + 'px';
+}
+ window.onload = updateLeftMenuHeight;
+    window.onresize = updateLeftMenuHeight;
+</script>
+
+<script>   
+    const leftDiv = document.querySelector('.left-menu');
+    const rightDiv = document.querySelector('.right-menu');
+    let leftElementCount = 0;
+    let rightElementCount = 0;
+
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createCurrencySymbol(container, countRef) {
+        if (countRef >= 20) return;
+
+        const currencies = ['/ActioImage/dollar.png', '/ActioImage/euro.png', '/ActioImage/uah.png', '/ActioImage/zl.png', '/ActioImage/arrows.png', '/ActioImage/arrowDown.png'];
+        const currency = document.createElement('img');
+        currency.src = currencies[Math.floor(Math.random() * currencies.length)];
+        currency.classList.add('currency-symbol');
+        currency.style.left = `${getRandomNumber(0, container.clientWidth - 30)}px`;
+        currency.style.animationDuration = `${getRandomNumber(2, 5)}s`;
+        container.appendChild(currency);
+        countRef++;
+        currency.addEventListener('animationend', () => {
+            currency.remove();
+            countRef--;
+        });
+        if (container === leftDiv) {
+            leftElementCount = countRef;
+        } else if (container === rightDiv) {
+            rightElementCount = countRef;
+        }
+    }
+
+    setInterval(() => {
+        createCurrencySymbol(leftDiv, leftElementCount);
+        createCurrencySymbol(rightDiv, rightElementCount);
+    }, 600);
+</script>
