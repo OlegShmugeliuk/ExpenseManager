@@ -18,28 +18,29 @@ using Microsoft.AspNetCore.Routing;
 
 namespace ExpenseManager.Controllers
 {
+
 	[Route("[controller]")]
 	public class MainController : Controller
 	{
 		private static List<InfoBody> _infoBody = new List<InfoBody>()
 		{
-			new InfoBody { Body = "Test sosige",ExpenditureType="Housing", CurrentyType = "UAH", Price = 53.45},
-			new InfoBody {  Body = "Test pizza",ExpenditureType="Healthcare" ,CurrentyType = "UAH", Price = 100.0 },
-			new InfoBody {  Body = "Test pizza",ExpenditureType="Healthcare" ,CurrentyType = "UAH", Price = 100.0,postDateTime = new DateTime(2023, 11, 01) },
-			new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 13)},
-            new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 10)},
+			//new InfoBody { Body = "Test sosige",ExpenditureType="Housing", CurrentyType = "UAH", Price = 53.45},
+			//new InfoBody {  Body = "Test pizza",ExpenditureType="Healthcare" ,CurrentyType = "UAH", Price = 100.0 },
+			//new InfoBody {  Body = "Test pizza",ExpenditureType="Healthcare" ,CurrentyType = "UAH", Price = 100.0,postDateTime = new DateTime(2023, 11, 01) },
+			//new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 13)},
+   //         new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 10)},
             new InfoBody {  Body = "Test potato",ExpenditureType="Housing" ,CurrentyType = "UAH", Price = 190.45}
 		};
         
         private static List<IncomePerson> _incom = new List<IncomePerson>()
 		{
-			new IncomePerson {Income = 12.54, Currency = "UAH", SourceOfIncome="Job"},
-			new IncomePerson {Income = 122.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2023, 11, 01) },
-            new IncomePerson {Income = 122.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2024, 03, 10) },
-            new IncomePerson {Income = 999.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2024, 01, 10) },
-            new IncomePerson {Income = 120002.54, Currency = "UAH", SourceOfIncome="Job", IncomeTime = new DateTime(2022, 03, 10) },
-            new IncomePerson {Income = 1.54, Currency = "USD", SourceOfIncome="Freelance"},
-			new IncomePerson {Income = 1200.54, Currency = "PLN", SourceOfIncome="Business"},            
+			//new IncomePerson {Income = 12.54, Currency = "UAH", SourceOfIncome="Job"},
+			//new IncomePerson {Income = 122.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2023, 11, 01) },
+   //         new IncomePerson {Income = 122.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2024, 03, 10) },
+   //         new IncomePerson {Income = 999.54, Currency = "UAH", SourceOfIncome="Freelance", IncomeTime = new DateTime(2024, 01, 10) },
+   //         new IncomePerson {Income = 120002.54, Currency = "UAH", SourceOfIncome="Job", IncomeTime = new DateTime(2022, 03, 10) },
+   //         new IncomePerson {Income = 1.54, Currency = "USD", SourceOfIncome="Freelance"},
+			//new IncomePerson {Income = 1200.54, Currency = "PLN", SourceOfIncome="Business"},            
         };
 
 		public static Dictionary<string, double> result = new Dictionary<string, double>();
@@ -87,7 +88,7 @@ namespace ExpenseManager.Controllers
 		}
 
 		[HttpGet]
-		[Route("/")]
+		
 		[Route("[action]")]
 		public async Task<IActionResult> Start()
 		{
@@ -125,31 +126,7 @@ namespace ExpenseManager.Controllers
 			ViewBag.DateInfo = PostDateTime.Date.ToString("dd-MM-yyyy");
 
 
-            if (expenditureInfos.Count() == 0)
-			{
-				return RedirectToAction("EmptyPage");
-			}
 
-			#region Dictionary
-			//         var dic = _infoBody
-			//	.Where(item => item.postDateTime.Value.Date == PostDateTime.Date)
-			//	.GroupBy(item => item.ExpenditureType)
-			//	.ToDictionary(
-			//		group => group.Key,
-			//		group => (decimal)Math.Round(group.Sum(item => item.Price))
-			//	);
-
-			//// Перевірка на null перед використанням значення
-			////foreach (var kvp in dic)
-			////{
-			////	Console.WriteLine($"{kvp.Key}: {kvp.Value}");
-			////}
-
-			//var viewModel = new DictionaryForHomePage
-			//{
-			//	ExpenditureDictionary = dic
-			//};
-			#endregion Dictionary
 			
 
             return View(expenditureInfos);
@@ -245,30 +222,12 @@ namespace ExpenseManager.Controllers
 			}
 
 
-			#region Dictionary
-			//var dic = _infoBody
-			//	.Where(item => item.postDateTime.Value.Date == PostDateTime.Value.Date)
-			//	.GroupBy(item => item.ExpenditureType)
-			//	.ToDictionary(
-			//		group => group.Key,
-			//		group => (decimal)Math.Round(group.Sum(item => item.Price))
-			//	);
-
-
-
-			//var viewModel = new DictionaryForHomePage
-			//{
-			//	ExpenditureDictionary = dic
-			//};
-			#endregion
+			
 
 			IEnumerable<DictionaryForHomePage> expenditureInfos = GenerateExpenditureInfos(_infoBody, item => item.postDateTime?.Date == PostDateTime.Value.Date);
             ViewBag.DateInfo = PostDateTime.Value.ToString("dd-MM-yyyy");
 
-            if (expenditureInfos.Count() == 0)
-			{                
-                return RedirectToAction("EmptyPage");
-			}
+           
 
 			return View(expenditureInfos);
 
@@ -353,7 +312,7 @@ namespace ExpenseManager.Controllers
 		{
 			_incom.Add(new IncomePerson { Income = income, Currency = currency, SourceOfIncome = sourceOfIncome });
 			
-			return RedirectToAction("Information");
+			return RedirectToAction("InfoIncome");
 		}
 
 		[HttpPost]
@@ -555,8 +514,13 @@ namespace ExpenseManager.Controllers
 				infoBodies = _infoBody,
 				incomePersons = _incom
 			};
+			
 
 
+            if (historyViewModel.incomePersons.Count == 0 && historyViewModel.infoBodies.Count == 0)
+			{
+				return RedirectToAction("EmptyPage");
+			}
 
 			ViewBag.DatePost = DatePost;
 			return View(historyViewModel);
@@ -914,6 +878,11 @@ namespace ExpenseManager.Controllers
 			AveregeOfDay(historyView.infoBodies);
 
 
+			if(historyView.incomePersons.Count == 0 && historyView.infoBodies.Count == 0)
+			{
+				return RedirectToAction("EmptyPage");
+			}
+
 			return View(historyView);
 		}
 
@@ -923,9 +892,7 @@ namespace ExpenseManager.Controllers
 		[HttpPost]
 		[Route("[action]")]
 		public IActionResult Review(string allTime, string? year=null, DateTime? month = null, DateTime? day = null)
-		{
-			
-
+		{				
 			PopulateMonthAndYear();
 			HistoryViewModel historyView = new HistoryViewModel();
 
@@ -979,6 +946,7 @@ namespace ExpenseManager.Controllers
                 AveregeOfDay(historyView.infoBodies);
                 return View(historyView);
             }
+			
 
 			return View();
 		}

@@ -326,6 +326,8 @@
     var width = rect.width;
     var height = rect.height;
 
+    let windowHeight = window.innerHeight;
+
     console.log("Width: " + width + ", Height: " + height);
 
 
@@ -336,6 +338,10 @@ function updateLeftMenuHeight() {
     var leftMenu = document.querySelector('.left-menu'); // Елемент .left-menu
     var rightMenu = document.querySelector('.right-menu');
     
+    if(windowHeight > height){
+        height = windowHeight;
+    }
+
     leftMenu.style.height = height + 'px'; 
     rightMenu.style.height = height + 'px';
 }

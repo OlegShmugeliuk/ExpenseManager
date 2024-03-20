@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/HistoryStyle.css">
     
+    <partial name="_LoginPartial"/>
 </head>
 <body>
  <style>
@@ -43,6 +44,7 @@
                 <li><a asp-controller="Main" asp-action="History">History</a></li>
                 <li><a asp-controller="Main" asp-action="Review" asp-route-PresentTime="@DateTime.Now.ToString("MM-dd-yyyy")">Statistics</a></li>
                 <li><a href="#">Contact</a></li>
+
             </ul>
         </div>
     
@@ -52,21 +54,23 @@
         <div class="left-menu"></div>
         <div class="right-menu"></div>
         <div class="content">
-            @RenderBody()
+            @RenderSection("Scripts", required: false)
+            @RenderBody()                        
+            
         </div>
         
         <button id="openModal" class="buttonForHref" asp-controller="Main" asp-action="Add">+</button> 
 
 <div id="modal" class="modal">
     <div class="tabs">
-    <button class="tablink" onclick="openTab(event, 'expenses')" id="defaultOpen">Витрати</button>
-    <button class="tablink" onclick="openTab(event, 'income')">Доходи</button>
+    <button class="tablink" onclick="openTab(event, 'expenses')" id="defaultOpen">Expenses</button>
+    <button class="tablink" onclick="openTab(event, 'income')">Income</button>
     </div>
 
 <div id="expenses" class="tabcontent active">
 
     <div class="position-add">
-        <h3 style="position:relative; left:10px;">Запис витрат</h3>
+        <h3 style="position:relative; left:10px;">Record of expenses</h3>
     
 	    <form asp-controller="Main" asp-action="Add" method="post">
 
@@ -116,7 +120,7 @@
 
 <div id="income" class="tabcontent">
     
-        <h3 style="position:relative; left:7px;">Запис доходів</h3>
+        <h3 style="position:relative; left:7px;">Record of income</h3>
         <form asp-controller="Main" asp-action="AddIncomeInformation" method="post">
             <div class="position-add position-modal-incom">
 

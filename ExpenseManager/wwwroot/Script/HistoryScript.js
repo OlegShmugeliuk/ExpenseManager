@@ -1,7 +1,6 @@
 ﻿console.log("Test");
 
- document.getElementById('OkDelete').addEventListener('click', function(event) {
-        // Handle deletion here
+ document.getElementById('OkDelete').addEventListener('click', function(event) {        
         document.getElementById('DeleteModal').style.display = 'none';
         document.getElementById('Overlay').style.display = 'none';        
     });
@@ -41,7 +40,7 @@ let timeout;
         const itemId = hiddenElement.getAttribute('data-item-id'); // Отримуємо ID об'єкта
         document.getElementById('hiddenMessage').style.display = 'block';
         document.getElementById('hiddenMessage').style.top = rect.top+10 + 'px';
-        document.getElementById('hiddenMessage').style.left = rect.right + 'px';
+        document.getElementById('hiddenMessage').style.left = rect.right+100 + 'px';
         document.getElementById('itemId').value = itemId; // Зберігаємо ID обраного об'єкта у прихованому полі
     });
 

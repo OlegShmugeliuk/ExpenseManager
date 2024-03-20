@@ -10,6 +10,7 @@
     transform: translate(-50%, -50%);
     z-index: 10000;
     background-color: #ced4da;
+    animation: fadeIn 0.5s ease;
 }
 
     .edit-modal h3 {

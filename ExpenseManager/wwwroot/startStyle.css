@@ -11,18 +11,21 @@
 }
 
 .exchange-table {
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: collapse; /* з'єднує границі клітинок */
+    border: 1px solid black;
 }
+
 
     .exchange-table th, .exchange-table td {
         border: 1px solid black;
         padding: 8px;
         text-align: center;
+        
     }
 
     .exchange-table th {
-        background-color: #fff75e;
+        background-color: #c2c2c2;
     }
 
 .BuyCell {
@@ -37,7 +40,7 @@
 
 .currency-Type {
     color: black;
-    background-color: #ffea00
+    background-color: #fff75e;
 }
 
 .container-buttom {
@@ -64,7 +67,10 @@
     width: 290px;
     height: 170px;
     border-radius: 5px;
+    font-family: 'Trebuchet MS', sans-serif;
 }
+
+
 
 .serch-style {
     margin-bottom: 10px;

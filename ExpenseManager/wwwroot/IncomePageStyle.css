@@ -2,7 +2,8 @@
     display: flex;
     position:absolute;
     top:150px;
-    margin-left:140px
+    margin-left:250px;
+    
     
 }
     .Income-icone .item-container {
@@ -25,7 +26,7 @@
     cursor: pointer;
     position: absolute;
     top:320px;
-    left: 810px;    
+    left:130%;
     transform: rotate(180deg);
 }
 
@@ -41,4 +42,9 @@
 }
 .back-position a:active {
     color:cornflowerblue;
+}
+
+.action-gif-costs{
+    position:relative;
+    left:810px;
 }

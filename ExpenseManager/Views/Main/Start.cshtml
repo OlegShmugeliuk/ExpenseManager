@@ -38,6 +38,7 @@
 
 <link rel="stylesheet" href="/startStyle.css">
 
+
 <style>
     .action-gif {
     cursor: pointer;
@@ -183,8 +184,12 @@
 
     
     function closePopup() {
-        document.getElementById('popup').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
+            var popup = document.getElementById('popup');
+            popup.style.animation = 'fadeOut 0.5s ease';
+            setTimeout(function() {
+            popup.style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }, 500);
     }
 
     
@@ -250,7 +255,7 @@
 <div style="position: absolute; left:400px; top:180px; margin-bottom: 40px">
 
 
-<div style="display: flex; gap: 100px; position:relative; right:60px; bottom: 50px;">
+<div style="display: flex; gap: 100px; position:relative; right:45px; bottom: 50px;">
     @if (housingDisplayed.Count() > 0) {
         <div>
             <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@housingDisplayed[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@housingDisplayed[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
@@ -333,7 +338,7 @@
 
 
 
-<div style="position: absolute; right:730px; top:130px;">
+<div style="position: absolute; right:715px; top:130px;">
 @if (education.Count() > 0) {
     <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@education[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@education[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
         <img src="/pictures/education.png" width="50" height="50" style="vertical-align: middle;" />
@@ -362,7 +367,7 @@
     }
 </div>
 
-<div style="position: absolute; left:580px; top:133px;">
+<div style="position: absolute; left:595px; top:133px;">
     @if (clothing.Count() > 0) {
         <a asp-controller="Main" asp-action="InformationAbouType" asp-route-typePeriod="@ViewBag.TypePeriod" asp-route-postDate="@clothing[0].PostDate.Value.ToString("yyyy-MM-dd")" asp-route-type="@clothing[0].ExpenditureType" asp-route-DateOnfo="@ViewBag.DateInfo">
             <img src="/pictures/clothing.png" width="50" height="50" style="vertical-align: middle;" />
@@ -400,7 +405,7 @@
     <img class="action-gif" width="50" height="50" src="/pictures/income-page.gif" alt="income page">
 </a>
     
-<div style="position:absolute; left:455px; top:270px">
+<div style="position:absolute; left:478px; top:270px">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Remove border around the chart */
