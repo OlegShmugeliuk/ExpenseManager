@@ -30,24 +30,45 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/HistoryStyle.css">
     
+    
     <partial name="_LoginPartial"/>
 </head>
 <body>
  <style>
-        
+        .disabled-link {
+    color: red; /* Колір тексту неактивного посилання */
+    pointer-events: none; /* Заборонити взаємодію з посиланням */
+    cursor: not-allowed; /* Змінити курсор на "не дозволено" */
+    text-decoration: none; /* Заборонити підкреслення */
+}
+
     </style>
 
-  
+  @{
+    if (User.Identity.IsAuthenticated)
+    {
         <div class="line">
             <ul class="menu">
                 <li><a asp-controller="Main" asp-action="Start">Home</a> </li>                
                 <li><a asp-controller="Main" asp-action="History">History</a></li>
                 <li><a asp-controller="Main" asp-action="Review" asp-route-PresentTime="@DateTime.Now.ToString("MM-dd-yyyy")">Statistics</a></li>
                 <li><a href="#">Contact</a></li>
-
             </ul>
         </div>
-    
+    }
+    else
+    {
+        <div class="line">
+            <ul class="menu">
+                <li><a  style="color:gray" class="disabled-link" asp-controller="Main" asp-action="Start">Home</a></li>
+                <li><a  style="color:gray" class="disabled-link" asp-controller="Main" asp-action="History">History</a></li>
+                <li><a  style="color:gray" class="disabled-link" asp-controller="Main" asp-action="Review" asp-route-PresentTime="@DateTime.Now.ToString("MM-dd-yyyy")">Statistics</a></li>
+                <li><a  style="color:gray" class="disabled-link" href="#">Contact</a></li>
+            </ul>
+        </div>
+    }
+}
+
     
     <div>     
     
@@ -58,8 +79,16 @@
             @RenderBody()                        
             
         </div>
-        
-        <button id="openModal" class="buttonForHref" asp-controller="Main" asp-action="Add">+</button> 
+        @{
+            if (User.Identity.IsAuthenticated)
+            {
+                <button id="openModal" class="buttonForHref" asp-controller="Main" asp-action="Add">+</button>
+            }
+            else
+            {
+                <button id="openModal" class="buttonForHref" style="background-color:gray; color:black;" asp-controller="Main" asp-action="Add" disabled>+</button>
+            }
+        }
 
 <div id="modal" class="modal">
     <div class="tabs">

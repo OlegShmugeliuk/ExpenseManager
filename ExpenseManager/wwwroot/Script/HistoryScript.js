@@ -40,7 +40,7 @@ let timeout;
         const itemId = hiddenElement.getAttribute('data-item-id'); // Отримуємо ID об'єкта
         document.getElementById('hiddenMessage').style.display = 'block';
         document.getElementById('hiddenMessage').style.top = rect.top+10 + 'px';
-        document.getElementById('hiddenMessage').style.left = rect.right+100 + 'px';
+        document.getElementById('hiddenMessage').style.left = rect.right-50 + 'px';
         document.getElementById('itemId').value = itemId; // Зберігаємо ID обраного об'єкта у прихованому полі
     });
 

@@ -1,0 +1,72 @@
+﻿
+/*.line-ul {
+    list-style: none;*/ /* Відключаємо відображення крапок */
+    /*padding: 0;
+}
+
+    .line-ul li {
+        display: inline-block;*/ /* Розміщуємо елементи в рядок */
+        /*margin-right: 10px;*/ /* Встановлюємо відступи між елементами */
+    /*}*/
+
+        /* Застосовуємо стилі для крайнього елемента */
+        /*.line-ul li:first-child {
+            margin-left: 5px;*/ /* Встановлюємо відступ від краю для першого елемента */
+        /*}
+
+        .line-ul li:last-child {
+            margin-right: 5px;*/ /* Встановлюємо відступ від краю для останнього елемента */
+        /*}*/
+
+.element-for-registration-position {
+    position: absolute; /* Розміщення відносно батьківського елемента */
+    top: 1px; /* Встановлення верхньої границі */
+    left: 1370px; /* Встановлення правої границі */
+    z-index: 9999999; /* Встановлення найвищого рівня накладання */
+}
+
+.newNavbar-nav {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+}
+
+.newNav-item {
+    margin-left: 5px;*/ /* Відступ зліва */
+}
+
+.newNav-link {
+    text-decoration: none;
+}
+
+.Logout-position{
+    position:relative;
+    right:30px;
+    position:fixed;
+}
+
+    .Logout-position button {
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        width: 57px;
+        height: 25px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+        color: white;
+    }
+        .Logout-position button:hover {
+            color: black;
+            background-color: #8eecf5;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+.nameUser-position {
+    position: relative;
+    right: 100px;
+    position: fixed;
+}
+
+.position-p p {
+    position: relative;
+    bottom: 13px;
+}

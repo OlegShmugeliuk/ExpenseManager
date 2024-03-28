@@ -113,6 +113,8 @@ namespace ExpenseManager.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                ViewData["error"] = "";
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -124,12 +126,14 @@ namespace ExpenseManager.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    ViewData["error"] = "User account locked out.";
+                    _logger.LogWarning("");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ViewData["error"] = "Invalid login attempt.";
+                    ModelState.AddModelError(string.Empty, "");
                     return Page();
                 }
             }

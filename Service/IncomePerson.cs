@@ -8,12 +8,13 @@ namespace Service
 {
     public class IncomePerson
     {
-        public int? Id { get; set; } = new Random().Next();
+        public int Id { get; set; }
         public double? Income { get; set; } = 0.0;
         public string Currency { get; set; }
         public  string SourceOfIncome { get; set; }
         public DateTime? IncomeTime { get; set; } = DateTime.Now;
 
+        public string User { get; set; }
         public IncomePerson() { }
 
         public IncomePerson(IncomePerson incomePerson)

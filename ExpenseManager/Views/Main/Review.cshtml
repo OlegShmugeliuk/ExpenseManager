@@ -15,7 +15,7 @@
     
 }
 <link rel="stylesheet" href="/startStyle.css">
-
+<link rel="stylesheet" href="/StatisticStyle.css">
 <style>
     
 
@@ -68,6 +68,8 @@
 <div class="container-buttom">
         <button  class="button" id="PeriodStatistic">Сhange period</button>
 </div>
+
+<span class="Position-period">@ViewBag.Period</span>
 
 <div class="overlay" id="overlayStatictic"></div>
 
@@ -153,7 +155,7 @@
     var form = document.getElementById('monthForm');   
     var select = document.getElementById('monthSelect');
     select.addEventListener('change', function() {       
-        form.submit(); // Виправлено на form.submit()
+        form.submit(); 
     });
 
      var formYear = document.getElementById('YearForm');   
@@ -167,23 +169,22 @@
 
 <div class="position-detail-info">
     @if(@ViewBag.Balance >= 0){
-        <p style="color: #009879;">Баланс @ViewBag.Balance UAH</p>
+        <p style="color: #009879;">Balance: @ViewBag.Balance UAH</p>
     }
     else{
-        <p style="color: red;">Баланс @ViewBag.Balance UAH</p>
+        <p style="color: red;">Balance: @ViewBag.Balance UAH</p>
     }
     
-    <p style="color: #009879;">Дохід: @ViewBag.TodayIncom</p>
-    <p style="color: red;">Втрати: @ViewBag.TodayCosts</p>
-    <p style="color: red;">Витрати - день(сер.) @ViewBag.AverageDay UAH</p>
+    <p style="color: #009879;">Income: @ViewBag.TodayIncom</p>
+    <p style="color: red;">Costs: @ViewBag.TodayCosts</p>
+    <p style="color: red;">Costs - day (avg.): @ViewBag.AverageDay UAH</p>
 
     @if (ViewBag.AverageOfMonth != null)
     {
-        <p style="color: red;">Витрати - місяць(сер.) @ViewBag.AverageOfMonth</p>
+        <p style="color: red;">Expenses - month (avg.) @ViewBag.AverageOfMonth</p>
     }
 </div>
-@* <p>Рік @sumYear</p> *@
-<!-- У вашому HTML -->
+
 <canvas id="myChart" style="width: 1050px; height: 260px; position: relative; top:110px"></canvas>
 
 
@@ -383,7 +384,7 @@ Object.keys(mergedItem).forEach(function (key) {
     
     for (var i = 0; i < count.length; i++) { // Виправлено Lenght на length
          if(count.length===2||count.length===1 ){
-             windowHeight = 707;
+             windowHeight = 725;
              break;
          }else{
              windowHeight += 50;

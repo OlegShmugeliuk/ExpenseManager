@@ -1,9 +1,155 @@
 ﻿.row {
-    position: relative;
+   /* position: relative;
     bottom: 650px;
-    left: 250px;
+    left: 250px;*/
 }
 
 .content {
     height: 1px;
+}
+
+
+.registration-position{
+    position:relative;
+    top:200px;
+    left: 430px;
+    
+}
+.registration-position input{
+    height: 20px;
+    width:250px;
+    margin: 20px;
+    position:relative;
+    bottom:100px;
+    right:50px;
+
+}
+    .registration-position label {
+        position: relative;
+        bottom: 125px;
+        right: 280px;
+        font-size: 20px;
+    }
+
+    .registration-position p, hr {
+        font-weight: bold;
+        font-size: 35px;
+        position: relative;
+        bottom: 130px;
+        right: 10px
+    }
+.registration-position hr {
+        /*width: 700px;*/
+        right:200px;
+    }
+    .registration-position button {
+        /*width: 700px;*/
+        position: relative;
+        left: 155px;
+        bottom: 90px;
+        border: none;
+        width: 150px;
+        height: 30px;
+        background-color: #007bff;
+        border-radius:5px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+        color:aliceblue;
+        font-size:15px;
+    }
+        .registration-position button:hover {
+            background-color: #8eecf5;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            color: black;
+        }
+
+.Log-position {
+    position: relative;
+    top: 200px;
+    left: 430px;
+    font-size:17px;
+}
+
+    .Log-position p {
+        position: relative;
+        bottom: 130px;
+        font-weight: bold;
+    }
+    .Log-position input {
+        position: relative;
+        bottom: 120px;
+        margin: 20px;
+        height: 20px;
+        width: 250px;
+    }
+    .Log-position label {
+        position: relative;
+        bottom:145px;
+        right:250px
+        
+    }
+.check-box-position {
+    position: relative;
+    left: 380px;
+}
+.check-box-position input {
+    position: relative;
+    top: 0px;
+    left: 15px;
+    width: 15px;
+
+}
+    .check-box-position label {
+        
+        
+    }
+.Log-position button {
+    position: relative;
+    left: 155px;
+    bottom: 130px;
+    border: none;
+    width: 150px;
+    height: 30px;
+    background-color: #007bff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
+    color: aliceblue;
+    font-size: 15px;
+}
+
+    .Log-position button:hover {
+        background-color: #8eecf5;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        color: black;
+    }
+
+.erroRegisterPosition{
+    position:relative;
+    bottom:100px;
+    color:red
+
+}
+
+
+.confirmPasswordPosition{
+    position: relative;
+    right: 130px;
+}
+.PasswordPosition {
+    position: relative;
+    right: 55px;
+}
+
+.EmailPosition {
+    position: relative;
+    right: 23px;
+}
+
+.erroLoginPosition {
+    position: relative;
+    bottom: 120px;
+    color: red
+}
+.PasswordLoginError {
+    position: relative;
+    right: 30px;
 }

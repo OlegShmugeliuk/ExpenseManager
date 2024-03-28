@@ -51,18 +51,19 @@ body {
 
 
 .left-menu {
-    background-color: #dedede;
+    /*background-color: #dedede;*/
     position: relative;
     top: 30px;
     width: 170px;
     height: 707px;
     float: left;
     overflow: hidden;
+    background: linear-gradient(to bottom, #dad7d7, #e4dfdf);
     box-shadow: 0px 4px 6px #009879;
 }
 
 .right-menu {
-    background-color: #dedede;
+    background: linear-gradient(to bottom, #dad7d7, #e4dfdf);
     position: relative;
     top: 30px;
     left: 18px;
@@ -541,14 +542,7 @@ body {
     }
 }
 
-.element-for-registration-position {
-    position: absolute; /* Розміщення відносно батьківського елемента */
-    top: 100px; /* Встановлення верхньої границі */
-    left: 0; /* Встановлення лівої границі */
-    z-index: 99999; /* Встановлення найвищого рівня накладання */
-    
-    
-}
+
 .text-empty-page-position {
     position: relative;
     top: 180px;
@@ -564,5 +558,8 @@ body {
     width: 250px;
     height: 250px;
 }
+
+
+
 
 

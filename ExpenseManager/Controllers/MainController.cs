@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Identity;
+using ExpenseManager.Areas.Identity.Data;
 
 
 
@@ -29,7 +31,7 @@ namespace ExpenseManager.Controllers
 			//new InfoBody {  Body = "Test pizza",ExpenditureType="Healthcare" ,CurrentyType = "UAH", Price = 100.0,postDateTime = new DateTime(2023, 11, 01) },
 			//new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 13)},
    //         new InfoBody { Body = "Test water" ,ExpenditureType="Utilities",CurrentyType = "UAH", Price = 0.45, postDateTime = new DateTime(2024, 01, 10)},
-            new InfoBody {  Body = "Test potato",ExpenditureType="Housing" ,CurrentyType = "UAH", Price = 190.45}
+            
 		};
         
         private static List<IncomePerson> _incom = new List<IncomePerson>()
@@ -43,23 +45,31 @@ namespace ExpenseManager.Controllers
 			//new IncomePerson {Income = 1200.54, Currency = "PLN", SourceOfIncome="Business"},            
         };
 
-		public static Dictionary<string, double> result = new Dictionary<string, double>();
+        ExpenseManagerDbContext _context { get; set; }
+        ExpenseManagerDbContext _IncomeContext { get; set; }
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public static Dictionary<string, double> result = new Dictionary<string, double>();
 
 
-		public MainController()
+		public MainController(ExpenseManagerDbContext context, UserManager<ApplicationUser> userManager, ExpenseManagerDbContext incomeContext )
 		{
+			_context = context;
+			_userManager = userManager;
+			_IncomeContext = incomeContext;
 
-		}
+
+        }
 
 		[Route("/index")]
 		public IActionResult Index()
 		{
-			// Assuming you have a method to transform _infoBody to DictionaryForHomePage
+			
 			var transformedData = TransformData(_infoBody);            
             return View(transformedData);
 		}
 
-		// Add a method to transform InfoBody to DictionaryForHomePage
+		
 		private IEnumerable<DictionaryForHomePage> TransformData(List<InfoBody> infoBodyData)
 		{
 			var transformedData = infoBodyData.Select(item => new DictionaryForHomePage
@@ -92,7 +102,11 @@ namespace ExpenseManager.Controllers
 		[Route("[action]")]
 		public async Task<IActionResult> Start()
 		{
-			ViewBag.DateInfo = "";
+            _infoBody = _context.ExpensesDb.Where(item => item.User == _userManager.GetUserId(this.User)).ToList();
+
+			_incom = _IncomeContext.IncomesDb.Where(item => item.User == _userManager.GetUserId(this.User)).ToList();
+
+            ViewBag.DateInfo = "";
 			CultureInfo culture = new CultureInfo("en-US");
 
 			Dictionary<string, string> month = new Dictionary<string, string>();
@@ -311,8 +325,20 @@ namespace ExpenseManager.Controllers
 		public IActionResult AddIncomeInformation(double income, string currency, string sourceOfIncome)
 		{
 			_incom.Add(new IncomePerson { Income = income, Currency = currency, SourceOfIncome = sourceOfIncome });
-			
-			return RedirectToAction("InfoIncome");
+
+            IncomePerson newIncome = new IncomePerson()
+            {
+                Income = income,
+                Currency = currency,
+                SourceOfIncome = sourceOfIncome,
+                User = _userManager.GetUserId(this.User)
+            };
+
+            _IncomeContext.IncomesDb.Add(newIncome);
+
+            _IncomeContext.SaveChanges();
+
+            return RedirectToAction("InfoIncome");
 		}
 
 		[HttpPost]
@@ -320,7 +346,21 @@ namespace ExpenseManager.Controllers
 		public IActionResult Add(string body, string expenditureType, double price, string currentyType)
 		{
 			_infoBody.Add(new InfoBody { Body = body, ExpenditureType = expenditureType, CurrentyType = currentyType, Price = price });
-			return RedirectToAction("Start");
+
+			InfoBody newExpense = new InfoBody()
+			{
+				Body = body,
+				ExpenditureType = expenditureType,
+				CurrentyType = currentyType,
+                Price = price,
+				User = _userManager.GetUserId(this.User)
+			};
+
+            _context.ExpensesDb.Add(newExpense);
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Start");
 		}
 
 		[HttpGet]
@@ -386,12 +426,16 @@ namespace ExpenseManager.Controllers
                     }
 
                 }
-                //var infoBody = _infoBody.Find(body => body.Id == IdBody);
+                
                 if (incomePerson != null)
                 {
-
                     incomePerson.Income = ConvertPrice;
                     incomePerson.Currency = currentyType;
+
+                    var incomeDb = _IncomeContext.IncomesDb.Find(itemId);
+                    incomeDb.Currency = currentyType;
+                    incomeDb.Income = ConvertPrice;
+                    _IncomeContext.SaveChanges();
 
                 }
                 return RedirectToAction("History");
@@ -414,8 +458,10 @@ namespace ExpenseManager.Controllers
 					{
 						result = await parser.ParseForUAH();
 						ConvertPrice = convertValue.ConvertFrom(currentyType, result, infoBody.Price);
+                                               
 
-					}
+
+                    }
 					if (infoBody.CurrentyType == "EUR")
 					{
 						result = await parser.ParseForEUR();
@@ -436,14 +482,19 @@ namespace ExpenseManager.Controllers
 					}
 
 				}
-				//var infoBody = _infoBody.Find(body => body.Id == IdBody);
+				
 				if (infoBody != null)
 				{
 
 					infoBody.Price = ConvertPrice;
 					infoBody.CurrentyType = currentyType;
 
-				}
+                    var expense = _context.ExpensesDb.Find(itemId);                    
+                    expense.CurrentyType = currentyType;
+                    expense.Price = ConvertPrice;
+                    _context.SaveChanges();
+
+                }
                 return RedirectToAction("History");
             }
             return RedirectToAction("History");
@@ -456,17 +507,27 @@ namespace ExpenseManager.Controllers
         public IActionResult Delete(int IdBody)
         {
             var infoBody = _infoBody.Find(body => body.Id == IdBody);
+            
 
             if (infoBody != null)
             {
                 _infoBody.Remove(infoBody);
+                var expense = _context.ExpensesDb.Find(IdBody);
+                _context.ExpensesDb.Remove(expense);
+
+                _context.SaveChanges();
             }
 			else
 			{
 				var income = _incom.Find(item => item.Id == IdBody);
 				if(income != null)
 				{
-					_incom.Remove(income);
+                    var incomeDb = _IncomeContext.IncomesDb.Find(IdBody);
+                    _IncomeContext.IncomesDb.Remove(incomeDb);
+
+                    _IncomeContext.SaveChanges();
+
+                    _incom.Remove(income);
 				}
 			}
             
@@ -612,9 +673,9 @@ namespace ExpenseManager.Controllers
                     dayResult = _incom.GroupBy(item => item.SourceOfIncome)
                         .Select(group => new IncomePerson
                         {
-                            SourceOfIncome = "", // Задаємо значення SourceOfIncome
-                            Income = 0, // Задаємо значення Income
-                            Currency = "" // Задаємо значення Currency
+                            SourceOfIncome = "", 
+                            Income = 0, 
+                            Currency = ""
                         });
 
                 }
@@ -783,8 +844,8 @@ namespace ExpenseManager.Controllers
 		{
 			HistoryViewModel historyView = new HistoryViewModel()
 			{
-				incomePersons = _incom.Where(item => item.IncomeTime.Value.ToString("MM-dd-yyyy") == PresentTime).ToList(),
-				infoBodies = _infoBody.Where(item => item.postDateTime.Value.ToString("MM-dd-yyyy") == PresentTime).ToList()
+				incomePersons = _incom,
+				infoBodies = _infoBody
 			};
 
 			CostsAndIncomViewBag(historyView.incomePersons, historyView.infoBodies);
@@ -871,9 +932,8 @@ namespace ExpenseManager.Controllers
 			PopulateMonthAndYear();
 
 			HistoryViewModel historyView = InfoToday(PresentTime);
-			//string filePath = @"C:\Users\shmol\OneDrive\Робочий стіл\Project ASP.NET\ExpenseManager\ExpenseManager\JSONDATA\CostsAndIncomData.json";
+			
 
-			//WriteToJsonFile(historyView, filePath);
 
 			AveregeOfDay(historyView.infoBodies);
 
@@ -882,8 +942,9 @@ namespace ExpenseManager.Controllers
 			{
 				return RedirectToAction("EmptyPage");
 			}
+			ViewBag.Period = "Information for the entire time of use";
 
-			return View(historyView);
+            return View(historyView);
 		}
 
 
@@ -946,9 +1007,9 @@ namespace ExpenseManager.Controllers
                 AveregeOfDay(historyView.infoBodies);
                 return View(historyView);
             }
-			
 
-			return View();
+            ViewBag.Period = "";
+            return View();
 		}
 
 		[HttpPost]
@@ -958,14 +1019,34 @@ namespace ExpenseManager.Controllers
 			int? index = _incom.FindIndex(item => item.Id == Id);
 			if (index != -1)
 			{
-				_incom[index.Value].Income = price;
-				_incom[index.Value].Currency = currentyType;
+                var expense = _IncomeContext.IncomesDb.Find(Id);
+                 
+                expense.SourceOfIncome = expenditureType;
+                expense.Currency = currentyType;                                
+				if (price != 0)
+				{
+					expense.Income = price;
+                    _incom[index.Value].Income = price;
+				}
+                _IncomeContext.SaveChanges();
+
+                _incom[index.Value].Currency = currentyType;
 				_incom[index.Value].SourceOfIncome = expenditureType;
 			}
+
 			int? indexCosts = _infoBody.FindIndex(item => item.Id == Id);
-			if(indexCosts !=-1)
+
+                       
+            if (indexCosts !=-1)
             {
-				_infoBody[indexCosts.Value].Body = body;
+                var expense = _context.ExpensesDb.Find(Id);
+                expense.Body = body;
+                expense.ExpenditureType = expenditureType;
+                expense.CurrentyType = currentyType;
+                expense.Price = price;
+                _context.SaveChanges();
+
+                _infoBody[indexCosts.Value].Body = body;
                 _infoBody[indexCosts.Value].Price = price;
                 _infoBody[indexCosts.Value].CurrentyType = currentyType;
                 _infoBody[indexCosts.Value].ExpenditureType = expenditureType;

@@ -1,0 +1,12 @@
+﻿.position-detail-info {
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.Position-period {
+    position: relative;
+    top: 120px;
+    left: 400px;
+    color: #0068af;
+    font-size: 25px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
